@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_ULTIMATE_PRO_V6</title>
+    <title>MALONE_ULTIMATE_PRO_V7</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -29,7 +29,6 @@
             overflow: hidden; 
         }
 
-        /* NAVIGATION */
         .nav-bar {
             display: flex;
             background: rgba(13, 17, 23, 0.9);
@@ -62,7 +61,6 @@
         .page { display: none; flex: 1; padding: 20px; overflow-y: auto; box-sizing: border-box; }
         .page.active { display: block; }
 
-        /* DASHBOARD HEADER */
         .header-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
         .h-card { 
             background: var(--card-bg); 
@@ -84,38 +82,32 @@
 
         h3 { color: var(--accent); font-family: 'Orbitron', sans-serif; font-size: 13px; margin-top: 0; margin-bottom: 15px; text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 10px; }
 
-        /* INPUTS */
-        .input-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .input-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 15px; }
         label { display: block; font-size: 11px; color: var(--text-dim); margin-bottom: 5px; text-transform: uppercase; }
         input, select { width: 100%; background: #161b22; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
 
-        /* CHECKLIST - TES 10 CRITÈRES */
         .checklist-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .check-row { 
             display: flex; justify-content: space-between; align-items: center;
             background: #161b22; padding: 10px 15px; border-radius: 6px;
             font-size: 13px; border-left: 3px solid #30363d; transition: 0.2s;
         }
-        .check-row:hover { border-left-color: var(--accent); background: #1c2128; }
         .check-row input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
 
-        /* SCORE & ACTION */
         .score-box { text-align: center; padding: 20px; border: 1px solid var(--accent); border-radius: 10px; background: rgba(0, 212, 255, 0.02); }
         .score-val { font-family: 'Orbitron', sans-serif; font-size: 45px; display: block; }
+        
         .btn-action {
             background: var(--green); color: black; border: none; padding: 15px;
             width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron';
             cursor: pointer; margin-top: 15px; transition: 0.3s;
         }
 
-        /* JOURNAL TABLE */
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 12px; color: var(--text-dim); font-size: 11px; border-bottom: 1px solid var(--border); }
         td { padding: 12px; border-bottom: 1px solid #161b22; font-size: 13px; }
-        .win { color: var(--green); font-weight: bold; }
-        .loss { color: var(--red); font-weight: bold; }
-
-        .layout-hub { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        
+        .layout-hub { display: grid; grid-template-columns: 1fr 450px; gap: 20px; }
     </style>
 </head>
 <body>
@@ -128,13 +120,13 @@
 
     <div id="dashboard" class="page active">
         <div class="header-grid">
-            <div class="h-card"><span>ÉQUITÉ ACTUELLE</span><b id="db-bal">1000.00$</b></div>
-            <div class="h-card"><span>PROFIT TOTAL</span><b id="db-pl">0.00$</b></div>
+            <div class="h-card"><span>EQUITY</span><b id="db-bal">0.00$</b></div>
+            <div class="h-card"><span>P/L TOTAL</span><b id="db-pl">0.00$</b></div>
             <div class="h-card"><span>WIN RATE</span><b id="db-wr">0%</b></div>
-            <div class="h-card"><span>NB TRADES</span><b id="db-tr">0</b></div>
+            <div class="h-card"><span>TRADES</span><b id="db-tr">0</b></div>
         </div>
         <div class="glass-card">
-            <h3>📊 ANALYSE DE LA COURBE</h3>
+            <h3>📊 PERFORMANCE GÉNÉRALE</h3>
             <div style="height: 400px;"><canvas id="equityChart"></canvas></div>
         </div>
     </div>
@@ -142,75 +134,74 @@
     <div id="hub" class="page">
         <div class="layout-hub">
             <div class="glass-card">
-                <h3>🛡️ TES 10 CRITÈRES DE VALIDATION</h3>
-                <div class="checklist-container" id="checklist">
+                <h3>🛡️ VALIDATION MALONE (10 CRITÈRES)</h3>
+                <div class="checklist-container">
                     <div class="check-row">1. Structure D1/H4 alignée <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
                     <div class="check-row">2. Cassure de trendline <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">3. Zone SMMA (Support/Res) <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">3. Zone SMMA confirmée <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
                     <div class="check-row">4. Order Block / FVG <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">5. TF d'entrée aligné (M15/M5) <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">6. Absence de News majeures <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">7. Ratio RR minimum 1:2 <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">8. Divergence RSI confirmée <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">9. Pullback sur la zone <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">10. Psychologie & Calme <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">5. TF M15/M5 alignés <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">6. Absence de News <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">7. Ratio RR > 1:2 <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">8. Confirmation RSI <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">9. Pullback effectué <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">10. Focus & Discipline <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
                 </div>
-                <div style="margin-top: 20px;" class="score-box">
-                    <span>SCORE DE CONFIANCE MALONE</span>
+                <div class="score-box" style="margin-top: 20px;">
                     <b class="score-val" id="score">0%</b>
                 </div>
             </div>
 
             <div class="glass-card">
-                <h3>⚙️ GESTION DU RISQUE</h3>
+                <h3>⚙️ CALCULS & EXÉCUTION</h3>
                 <div class="input-row">
-                    <div><label>CAPITAL ($)</label><input type="number" id="cap" value="1000" oninput="calc()"></div>
-                    <div><label>RISQUE (%)</label><input type="number" id="risk" value="1" oninput="calc()"></div>
+                    <div><label>TON CAPITAL ($)</label><input type="number" id="cap" placeholder="Ex: 5000" oninput="calc()"></div>
+                    <div><label>RISQUE %</label><input type="number" id="risk" value="1" oninput="calc()"></div>
+                    <div><label>SL PIPS</label><input type="number" id="sl" value="10" oninput="calc()"></div>
                 </div>
-                <div class="input-row">
-                    <div><label>STOP LOSS (PIPS)</label><input type="number" id="sl" value="10" oninput="calc()"></div>
-                </div>
-                <div style="background: #000; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 25px; border: 1px dashed var(--accent);">
-                    <span style="color: var(--text-dim); font-size: 11px;">LOT MT5 À PRENDRE</span>
-                    <div id="lot-res" style="font-family: 'Orbitron'; font-size: 28px; color: var(--green);">0.10</div>
+                
+                <div style="background: #000; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid var(--green); margin-bottom: 20px;">
+                    <span style="color: var(--text-dim); font-size: 10px;">VOLUME LOT MT5</span>
+                    <div id="lot-res" style="font-family: 'Orbitron'; font-size: 32px; color: var(--green);">0.00</div>
                 </div>
 
-                <h3>📝 NOUVEAU TRADE</h3>
+                <h3>📝 ENREGISTRER LE TRADE</h3>
                 <label>INSTRUMENT</label>
                 <select id="pair">
                     <optgroup label="INDICES">
                         <option>NAS100</option><option>US30</option><option>SP500</option><option>GER40</option>
                     </optgroup>
-                    <optgroup label="COMMODITIES">
+                    <optgroup label="FOREX">
+                        <option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>AUD/USD</option>
+                        <option>USD/CHF</option><option>USD/CAD</option><option>NZD/USD</option><option>EUR/GBP</option>
+                        <option>GBP/JPY</option><option>EUR/AUD</option><option>GBP/CAD</option><option>EUR/CHF</option>
+                        <option>CHF/JPY</option><option>GBP/CHF</option><option>EUR/JPY</option>
+                    </optgroup>
+                    <optgroup label="METALS / OIL">
                         <option>XAUUSD (GOLD)</option><option>XAGUSD (SILVER)</option><option>WTI (OIL)</option>
                     </optgroup>
-                    <optgroup label="FOREX">
-                        <option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option>
-                    </optgroup>
                 </select>
-                <label style="margin-top:10px;">RÉSULTAT</label>
-                <select id="res"><option value="tp">✅ TAKE PROFIT</option><option value="sl">❌ STOP LOSS</option><option value="be">🛡️ BREAK EVEN</option></select>
-                <label style="margin-top:10px;">GAIN/PERTE RÉEL ($)</label>
-                <input type="number" id="pl-val" placeholder="Ex: 100">
-                <button class="btn-action" onclick="saveTrade()">VALIDER LA POSITION</button>
+                <div class="input-row" style="margin-top:10px;">
+                    <div><label>RÉSULTAT</label><select id="res"><option value="tp">✅ TP</option><option value="sl">❌ SL</option><option value="be">🛡️ BE</option></select></div>
+                    <div><label>P/L RÉEL ($)</label><input type="number" id="pl-val"></div>
+                </div>
+                <button class="btn-action" onclick="saveTrade()">ARCHIVER LE TRADE</button>
             </div>
         </div>
     </div>
 
     <div id="journal" class="page">
         <div class="glass-card">
-            <h3>📜 HISTORIQUE COMPLET</h3>
-            <table>
-                <thead>
-                    <tr><th>DATE</th><th>INSTRUMENT</th><th>SCORE</th><th>RÉSULTAT</th><th>P/L ($)</th></tr>
-                </thead>
+            <h3>📜 HISTORIQUE</h3>
+            <table id="journalTable">
+                <thead><tr><th>DATE</th><th>PAIR</th><th>SCORE</th><th>RÉSULTAT</th><th>P/L ($)</th></tr></thead>
                 <tbody id="journalList"></tbody>
             </table>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('malone_pro_v6')) || [];
+        let db = JSON.parse(localStorage.getItem('malone_v7')) || [];
 
         function openPage(evt, name) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -230,7 +221,7 @@
             let s = 0;
             document.querySelectorAll('.cb').forEach(c => { if(c.checked) s += parseInt(c.getAttribute('data-p')); });
             document.getElementById('score').innerText = s + "%";
-            document.getElementById('score').parentElement.style.borderColor = s >= 80 ? 'var(--green)' : 'var(--accent)';
+            document.getElementById('score').style.color = s >= 80 ? 'var(--green)' : 'var(--accent)';
         }
 
         function saveTrade() {
@@ -239,47 +230,47 @@
                 pair: document.getElementById('pair').value,
                 score: document.getElementById('score').innerText,
                 res: document.getElementById('res').value,
-                pl: parseFloat(document.getElementById('pl-val').value) || 0
+                pl: parseFloat(document.getElementById('pl-val').value) || 0,
+                capitalAtTime: parseFloat(document.getElementById('cap').value) || 0
             };
             db.push(trade);
-            localStorage.setItem('malone_pro_v6', JSON.stringify(db));
-            alert("Trade ajouté avec succès !");
-            document.getElementById('pl-val').value = '';
+            localStorage.setItem('malone_v7', JSON.stringify(db));
+            alert("Position enregistrée.");
         }
 
         function renderDB() {
-            let total = 0, wins = 0, eq = [1000];
-            db.forEach(t => { total += t.pl; if(t.res === 'tp') wins++; eq.push(1000 + total); });
-            document.getElementById('db-bal').innerText = (1000 + total).toFixed(2) + "$";
+            let total = 0, wins = 0, initialCap = db.length > 0 ? db[0].capitalAtTime : 0;
+            let eq = [initialCap];
+            db.forEach(t => { 
+                total += t.pl; 
+                if(t.res === 'tp') wins++; 
+                eq.push(initialCap + total); 
+            });
+            document.getElementById('db-bal').innerText = (initialCap + total).toFixed(2) + "$";
             document.getElementById('db-pl').innerText = total.toFixed(2) + "$";
             document.getElementById('db-wr').innerText = db.length ? ((wins/db.length)*100).toFixed(0) + "%" : "0%";
             document.getElementById('db-tr').innerText = db.length;
-            draw(eq);
+            drawChart(eq);
         }
 
         function renderJournal() {
             const list = document.getElementById('journalList');
             list.innerHTML = '';
             db.slice().reverse().forEach(t => {
-                list.innerHTML += `<tr>
-                    <td>${t.date}</td><td>${t.pair}</td><td>${t.score}</td>
-                    <td class="${t.res === 'tp' ? 'win' : 'loss'}">${t.res.toUpperCase()}</td>
-                    <td style="color:${t.pl >= 0 ? 'var(--green)' : 'var(--red)'}">${t.pl}$</td>
-                </tr>`;
+                list.innerHTML += `<tr><td>${t.date}</td><td>${t.pair}</td><td>${t.score}</td><td>${t.res.toUpperCase()}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`;
             });
         }
 
-        let chart;
-        function draw(data) {
+        let ch;
+        function drawChart(data) {
             const ctx = document.getElementById('equityChart').getContext('2d');
-            if(chart) chart.destroy();
-            chart = new Chart(ctx, {
+            if(ch) ch.destroy();
+            ch = new Chart(ctx, {
                 type: 'line',
-                data: { labels: data.map(()=>''), datasets: [{ data: data, borderColor: '#00ffa3', backgroundColor: 'rgba(0, 255, 163, 0.1)', fill: true, tension: 0.4 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#161b22' } } } }
+                data: { labels: data.map(()=>''), datasets: [{ data: data, borderColor: '#00ffa3', backgroundColor: 'rgba(0,255,163,0.05)', fill: true, tension: 0.4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
-
         renderDB(); calc();
     </script>
 </body>
