@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_TRADING_SYSTEM_V12</title>
+    <title>MALONE_TRADING_V12_CLEAN</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -30,6 +30,7 @@
         .btn-action { background: var(--green); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; margin-top: 15px; }
         .active-trade-card { background: #1c2128; border: 1px solid var(--accent); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .btn-close { background: var(--red); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-size: 10px; }
+        .btn-reset { background: transparent; border: 1px solid var(--red); color: var(--red); padding: 10px; cursor: pointer; border-radius: 6px; font-size: 11px; margin-top: 30px; }
     </style>
 </head>
 <body>
@@ -50,9 +51,7 @@
         
         <div class="glass-card">
             <h3>⚡ POSITIONS EN COURS</h3>
-            <div id="activeList">
-                <p style="color:var(--text-dim); font-size:13px;">Aucun trade actif.</p>
-            </div>
+            <div id="activeList"></div>
         </div>
 
         <div class="glass-card">
@@ -112,13 +111,14 @@
 
     <div id="journal" class="page">
         <div class="glass-card">
-            <h3>📜 JOURNAL DES TRADES TERMINÉS</h3>
+            <h3>📜 JOURNAL HISTORIQUE</h3>
             <table style="width:100%; border-collapse:collapse; font-size:14px;">
                 <thead style="text-align:left; color:var(--text-dim); border-bottom:1px solid var(--border);">
                     <tr><th style="padding:12px;">DATE</th><th>ACTIF</th><th>SCORE</th><th>STATUT</th><th>P/L ($)</th></tr>
                 </thead>
                 <tbody id="journalBody"></tbody>
             </table>
+            <button class="btn-reset" onclick="resetAll()">⚠️ RÉINITIALISER TOUTES LES DONNÉES</button>
         </div>
     </div>
 
@@ -139,7 +139,6 @@
             const r = parseFloat(document.getElementById('risk').value) || 0;
             const sl = parseFloat(document.getElementById('sl').value) || 1;
             document.getElementById('lot-res').innerText = cap > 0 ? ((cap * (r/100)) / (sl * 10)).toFixed(2) : "0.00";
-
             let s = 0;
             document.querySelectorAll('.cb').forEach(c => { if(c.checked) s += parseInt(c.getAttribute('data-p')); });
             let bonus = r <= 1 ? 20 : (r <= 2 ? 15 : (r <= 3 ? 10 : (r <= 4 ? 5 : 0)));
@@ -152,17 +151,9 @@
         function openTrade() {
             const cap = parseFloat(document.getElementById('cap').value);
             if(!cap) return alert("Saisis ton capital !");
-            const t = {
-                id: Date.now(),
-                date: new Date().toLocaleDateString(),
-                pair: document.getElementById('pair').value,
-                score: document.getElementById('score-display').innerText,
-                lot: document.getElementById('lot-res').innerText,
-                cap: cap
-            };
-            active.push(t);
+            active.push({ id: Date.now(), date: new Date().toLocaleDateString(), pair: document.getElementById('pair').value, score: document.getElementById('score-display').innerText, lot: document.getElementById('lot-res').innerText, cap: cap });
             localStorage.setItem('malone_active', JSON.stringify(active));
-            alert("Trade lancé ! Surveille le Dashboard.");
+            updateUI();
             openPage({currentTarget: document.querySelectorAll('.nav-item')[0]}, 'dashboard');
         }
 
@@ -171,36 +162,28 @@
             if (pl === null) return;
             const idx = active.findIndex(x => x.id === id);
             const trade = active.splice(idx, 1)[0];
-            const final = { ...trade, pl: parseFloat(pl), res: parseFloat(pl) >= 0 ? 'TP' : 'SL' };
-            trades.push(final);
+            trades.push({ ...trade, pl: parseFloat(pl), res: parseFloat(pl) >= 0 ? 'TP' : 'SL' });
             localStorage.setItem('malone_active', JSON.stringify(active));
             localStorage.setItem('malone_hist', JSON.stringify(trades));
             updateUI();
         }
 
+        function resetAll() {
+            if(confirm("Veux-tu vraiment effacer TOUT l'historique et les graphiques ?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
         function updateUI() {
             const container = document.getElementById('activeList');
             container.innerHTML = active.length ? '' : '<p style="color:var(--text-dim); font-size:13px;">Aucun trade actif.</p>';
-            active.forEach(t => {
-                container.innerHTML += `
-                    <div class="active-trade-card">
-                        <div><b>${t.pair}</b> | Lot: ${t.lot} | Score: ${t.score}</div>
-                        <button class="btn-close" onclick="confirmClose(${t.id})">CLÔTURER</button>
-                    </div>`;
-            });
-
+            active.forEach(t => { container.innerHTML += `<div class="active-trade-card"><div><b>${t.pair}</b> | Lot: ${t.lot} | Score: ${t.score}</div><button class="btn-close" onclick="confirmClose(${t.id})">CLÔTURER</button></div>`; });
             const body = document.getElementById('journalBody');
-            if(body) {
-                body.innerHTML = '';
-                trades.slice().reverse().forEach(t => {
-                    body.innerHTML += `<tr style="border-bottom:1px solid #161b22;"><td style="padding:12px;">${t.date}</td><td>${t.pair}</td><td>${t.score}</td><td>${t.res}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`;
-                });
-            }
-
+            if(body) { body.innerHTML = ''; trades.slice().reverse().forEach(t => { body.innerHTML += `<tr style="border-bottom:1px solid #161b22;"><td style="padding:12px;">${t.date}</td><td>${t.pair}</td><td>${t.score}</td><td>${t.res}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`; }); }
             let total = 0, wins = 0, start = trades.length ? trades[0].cap : 0;
             let hist = [start];
             trades.forEach(t => { total += t.pl; if(t.res === 'TP') wins++; hist.push(start + total); });
-            
             if(document.getElementById('db-bal')) {
                 document.getElementById('db-bal').innerText = (start + total).toFixed(2) + "$";
                 document.getElementById('db-pl').innerText = total.toFixed(2) + "$";
@@ -214,11 +197,7 @@
         function drawChart(data) {
             const ctx = document.getElementById('equityChart').getContext('2d');
             if(chart) chart.destroy();
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: { labels: data.map(()=>''), datasets: [{ data: data, borderColor: '#00ffa3', tension: 0.2, fill: true, backgroundColor: 'rgba(0,255,163,0.05)' }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
+            chart = new Chart(ctx, { type: 'line', data: { labels: data.map(()=>''), datasets: [{ data: data, borderColor: '#00ffa3', tension: 0.2, fill: true, backgroundColor: 'rgba(0,255,163,0.05)' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
         }
         updateUI(); calc();
     </script>
