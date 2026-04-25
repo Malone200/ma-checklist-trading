@@ -3,50 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_STRATEGY_V9</title>
+    <title>MALONE_ULTIMATE_V10</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #050608; --card-bg: #0d1117; --accent: #00d4ff;
-            --green: #00ffa3; --red: #ff4d4d; --text-main: #ffffff;
-            --text-dim: #8b949e; --border: #30363d;
-        }
+        :root { --bg: #050608; --card-bg: #0d1117; --accent: #00d4ff; --green: #00ffa3; --red: #ff4d4d; --text-main: #ffffff; --text-dim: #8b949e; --border: #30363d; }
         body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
-        
         .nav-bar { display: flex; background: rgba(13, 17, 23, 0.9); border-bottom: 1px solid var(--border); padding: 0 40px; gap: 30px; }
-        .nav-item { padding: 20px 0; cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; position: relative; }
+        .nav-item { padding: 20px 0; cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; position: relative; }
         .nav-item.active { color: var(--accent); }
         .nav-item.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--accent); box-shadow: 0 0 15px var(--accent); }
-
         .page { display: none; flex: 1; padding: 20px; overflow-y: auto; }
         .page.active { display: block; }
-
         .layout-hub { display: grid; grid-template-columns: 1fr 450px; gap: 20px; }
         .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        
         h3 { color: var(--accent); font-family: 'Orbitron'; font-size: 13px; margin: 0 0 15px 0; text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 10px; }
-
-        /* CHECKLIST */
         .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .check-row { display: flex; justify-content: space-between; align-items: center; background: #161b22; padding: 12px; border-radius: 6px; font-size: 13px; border-left: 3px solid #30363d; }
-        .check-row input { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
-        .pts { color: var(--accent); font-weight: bold; font-size: 11px; margin-left: 10px; }
-
-        /* SCORE BOX */
-        .score-box { text-align: center; padding: 25px; border-radius: 10px; border: 2px solid var(--border); background: rgba(0,0,0,0.4); transition: 0.4s; }
+        .check-row input { width: 18px; height: 18px; accent-color: var(--accent); }
+        .score-box { text-align: center; padding: 25px; border-radius: 10px; border: 2px solid var(--border); background: rgba(0,0,0,0.4); }
         .score-val { font-family: 'Orbitron'; font-size: 60px; display: block; }
-        .danger-ui { border-color: var(--red) !important; color: var(--red) !important; box-shadow: 0 0 20px rgba(255, 77, 77, 0.2); animation: pulse 1s infinite; }
+        .danger-ui { border-color: var(--red) !important; color: var(--red) !important; animation: pulse 1s infinite; }
         @keyframes pulse { 50% { opacity: 0.7; } }
-
-        /* FORMS */
         .input-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
         label { display: block; font-size: 10px; color: var(--text-dim); margin-bottom: 5px; text-transform: uppercase; }
-        input, select { width: 100%; background: #161b22; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; font-size: 14px; box-sizing: border-box; outline: none; }
-        input:focus { border-color: var(--accent); }
-
-        .btn-action { background: var(--green); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; margin-top: 15px; transition: 0.2s; }
-        .btn-action:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        input, select { width: 100%; background: #161b22; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        .btn-action { background: var(--green); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; margin-top: 15px; }
+        optgroup { background: #0d1117; color: var(--accent); font-style: normal; }
     </style>
 </head>
 <body>
@@ -59,13 +42,13 @@
 
     <div id="dashboard" class="page active">
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom:20px;">
-            <div class="glass-card" style="text-align:center;"><span>BALANCE</span><br><b id="db-bal" style="font-size:24px; color:var(--accent);">0$</b></div>
-            <div class="glass-card" style="text-align:center;"><span>P/L TOTAL</span><br><b id="db-pl" style="font-size:24px;">0$</b></div>
+            <div class="glass-card" style="text-align:center;"><span>EQUITY ACTUELLE</span><br><b id="db-bal" style="font-size:24px; color:var(--accent);">0.00$</b></div>
+            <div class="glass-card" style="text-align:center;"><span>P/L TOTAL</span><br><b id="db-pl" style="font-size:24px;">0.00$</b></div>
             <div class="glass-card" style="text-align:center;"><span>WIN RATE</span><br><b id="db-wr" style="font-size:24px;">0%</b></div>
-            <div class="glass-card" style="text-align:center;"><span>TRADES</span><br><b id="db-tr" style="font-size:24px;">0</b></div>
+            <div class="glass-card" style="text-align:center;"><span>TOTAL TRADES</span><br><b id="db-tr" style="font-size:24px;">0</b></div>
         </div>
         <div class="glass-card">
-            <h3>📈 PERFORMANCE</h3>
+            <h3>📈 PROGRESSION DU COMPTE</h3>
             <div style="height: 380px;"><canvas id="equityChart"></canvas></div>
         </div>
     </div>
@@ -73,66 +56,71 @@
     <div id="hub" class="page">
         <div class="layout-hub">
             <div class="glass-card">
-                <h3>🛡️ VALIDATION MALONE (MAX 80%)</h3>
+                <h3>🛡️ CHECKLIST MALONE (80%)</h3>
                 <div class="check-grid">
-                    <div class="check-row">1. Structure Fond D1/H4/H1 <span class="pts">20%</span> <input type="checkbox" class="cb" data-p="20" onchange="calc()"></div>
-                    <div class="check-row">2. Cassure de la tendance <span class="pts">15%</span> <input type="checkbox" class="cb" data-p="15" onchange="calc()"></div>
-                    <div class="check-row">3. Zone SMMA / Supply-Demand <span class="pts">10%</span> <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">4. Timeframe 1H & 2H (Aligné) <span class="pts">10%</span> <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">5. Order block (Multi-TF) <span class="pts">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">6. RSI divergence (30m-4H) <span class="pts">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">7. Double Break & Confirm <span class="pts">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">8. Pullback effectué <span class="pts">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">9. Impact psy maîtrisé <span class="pts">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    
+                    <div class="check-row">1. Structure Fond D1/H4/H1 <span style="color:var(--accent)">20%</span> <input type="checkbox" class="cb" data-p="20" onchange="calc()"></div>
+                    <div class="check-row">2. Cassure de la tendance <span style="color:var(--accent)">15%</span> <input type="checkbox" class="cb" data-p="15" onchange="calc()"></div>
+                    <div class="check-row">3. Zone SMMA / Supply-Demand <span style="color:var(--accent)">10%</span> <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">4. Timeframe 1H & 2H Alignés <span style="color:var(--accent)">10%</span> <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">5. Order block (30m/1H/4H/D1) <span style="color:var(--accent)">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">6. RSI divergence (30m/1H/4H) <span style="color:var(--accent)">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">7. Double Break & Confirm <span style="color:var(--accent)">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">8. Pullback effectué <span style="color:var(--accent)">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">9. Impact psy maîtrisé <span style="color:var(--accent)">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
                     <div class="check-row" style="background:rgba(0,212,255,0.05); border-left-color:var(--accent);">
-                        10. BONUS DISCIPLINE RISQUE <span class="pts" id="risk-bonus-display">0%</span>
+                        10. DISCIPLINE RISQUE <span id="risk-bonus-ui" style="color:var(--accent); font-weight:bold;">0%</span>
                     </div>
                 </div>
-
                 <div class="score-box" id="score-box" style="margin-top: 25px;">
-                    <span id="score-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Indice de Confiance</span>
+                    <span id="score-label" style="font-size: 11px; text-transform: uppercase;">Validation du Trade</span>
                     <b class="score-val" id="score-display">0%</b>
                 </div>
             </div>
 
             <div class="glass-card">
-                <h3>⚙️ GESTION DU RISQUE</h3>
+                <h3>⚙️ CALCULATEUR & ACTIFS</h3>
                 <div class="input-group">
-                    <div><label>CAPITAL ($)</label><input type="number" id="cap" value="1000" oninput="calc()"></div>
-                    <div><label>RISQUE %</label><input type="number" id="risk" value="1" step="0.5" oninput="calc()"></div>
-                    <div><label>SL PIPS</label><input type="number" id="sl" value="10" oninput="calc()"></div>
+                    <div><label>TON CAPITAL ($)</label><input type="number" id="cap" placeholder="Ex: 200" oninput="calc()"></div>
+                    <div><label>RISQUE %</label><input type="number" id="risk" placeholder="Ex: 1" step="0.5" oninput="calc()"></div>
+                    <div><label>SL PIPS</label><input type="number" id="sl" placeholder="10" oninput="calc()"></div>
                 </div>
 
-                <div style="background: #000; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--green); margin-bottom: 25px;">
-                    <span style="color: var(--text-dim); font-size: 10px; text-transform: uppercase;">Volume MT5 Recommandé</span>
-                    <div id="lot-final" style="font-family: 'Orbitron'; font-size: 36px; color: var(--green); margin-top: 5px;">0.10</div>
+                <div style="background: #000; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--green); margin-bottom: 20px;">
+                    <span style="color: var(--text-dim); font-size: 10px;">LOT MT5 CONSEILLÉ</span>
+                    <div id="lot-final" style="font-family: 'Orbitron'; font-size: 36px; color: var(--green);">0.00</div>
                 </div>
 
-                <h3>📝 ENREGISTRER LE TRADE</h3>
-                <label>INSTRUMENT</label>
+                <label>CHOISIR L'ACTIF</label>
                 <select id="pair">
-                    <option>NAS100</option><option>US30</option><option>XAUUSD</option>
-                    <option>EUR/USD</option><option>GBP/JPY</option><option>GBP/CAD</option>
-                    <option>USD/CHF</option><option>AUD/USD</option><option>USD/CAD</option>
+                    <optgroup label="INDICES">
+                        <option>NAS100</option><option>US30</option><option>SP500</option><option>GER40</option>
+                    </optgroup>
+                    <optgroup label="FOREX">
+                        <option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>AUD/USD</option>
+                        <option>USD/CHF</option><option>USD/CAD</option><option>NZD/USD</option><option>EUR/GBP</option>
+                        <option>GBP/JPY</option><option>EUR/AUD</option><option>GBP/CAD</option><option>EUR/CHF</option>
+                        <option>CHF/JPY</option><option>GBP/CHF</option><option>EUR/JPY</option>
+                    </optgroup>
+                    <optgroup label="METALS / OIL">
+                        <option>XAUUSD (GOLD)</option><option>XAGUSD (SILVER)</option><option>WTI (OIL)</option>
+                    </optgroup>
                 </select>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:15px;">
-                    <div><label>RÉSULTAT</label><select id="res-val"><option value="tp">✅ TAKE PROFIT</option><option value="sl">❌ STOP LOSS</option><option value="be">🛡️ BREAK EVEN</option></select></div>
-                    <div><label>GAIN/PERTE RÉEL ($)</label><input type="number" id="pl-input" placeholder="Ex: 50"></div>
+                    <div><label>RÉSULTAT</label><select id="res-val"><option value="tp">✅ TP</option><option value="sl">❌ SL</option><option value="be">🛡️ BE</option></select></div>
+                    <div><label>P/L RÉEL ($)</label><input type="number" id="pl-input" placeholder="Ex: 40"></div>
                 </div>
-
-                <button class="btn-action" onclick="saveTrade()">VALIDER ET ARCHIVER</button>
+                <button class="btn-action" onclick="saveTrade()">ARCHIVER DANS LE JOURNAL</button>
             </div>
         </div>
     </div>
 
     <div id="journal" class="page">
         <div class="glass-card">
-            <h3>📜 HISTORIQUE</h3>
-            <table style="width:100%; border-collapse:collapse;">
-                <thead style="text-align:left; color:var(--text-dim); font-size:11px; text-transform:uppercase;">
-                    <tr><th style="padding:15px;">Date</th><th>Paire</th><th>Score</th><th>Statut</th><th>P/L ($)</th></tr>
+            <h3>📜 JOURNAL HISTORIQUE</h3>
+            <table style="width:100%; border-collapse:collapse; font-size: 14px;">
+                <thead style="text-align:left; color:var(--text-dim); border-bottom: 1px solid var(--border);">
+                    <tr><th style="padding:15px;">DATE</th><th>ACTIF</th><th>SCORE</th><th>STATUT</th><th>P/L ($)</th></tr>
                 </thead>
                 <tbody id="journalBody"></tbody>
             </table>
@@ -140,7 +128,7 @@
     </div>
 
     <script>
-        let trades = JSON.parse(localStorage.getItem('malone_final_db')) || [];
+        let trades = JSON.parse(localStorage.getItem('malone_v10_db')) || [];
 
         function openPage(e, id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -156,42 +144,33 @@
             const r = parseFloat(document.getElementById('risk').value) || 0;
             const sl = parseFloat(document.getElementById('sl').value) || 1;
             
-            // 1. Calcul du Lot MT5
-            document.getElementById('lot-final').innerText = ((cap * (r/100)) / (sl * 10)).toFixed(2);
+            document.getElementById('lot-final').innerText = cap > 0 ? ((cap * (r/100)) / (sl * 10)).toFixed(2) : "0.00";
 
-            // 2. Score des 9 critères (Somme = 80%)
-            let criteriaScore = 0;
-            document.querySelectorAll('.cb').forEach(c => { if(c.checked) criteriaScore += parseInt(c.getAttribute('data-p')); });
+            let baseScore = 0;
+            document.querySelectorAll('.cb').forEach(c => { if(c.checked) baseScore += parseInt(c.getAttribute('data-p')); });
 
-            // 3. Logique du Critère 10 (Risque)
             let riskBonus = 0;
             let isDanger = false;
+            if (r > 0 && r <= 1) riskBonus = 20;
+            else if (r > 1 && r <= 2) riskBonus = 15;
+            else if (r > 2 && r <= 3) riskBonus = 10;
+            else if (r > 3 && r <= 4) riskBonus = 5;
+            else if (r > 4) isDanger = true;
 
-            if (r <= 1) riskBonus = 20;
-            else if (r <= 2) riskBonus = 15;
-            else if (r <= 3) riskBonus = 10;
-            else if (r <= 4) riskBonus = 5;
-            else { isDanger = true; }
+            document.getElementById('risk-bonus-ui').innerText = riskBonus + "%";
+            const final = baseScore + riskBonus;
+            const box = document.getElementById('score-box');
+            const disp = document.getElementById('score-display');
 
-            document.getElementById('risk-bonus-display').innerText = riskBonus + "%";
-            
-            const finalScore = criteriaScore + riskBonus;
-            const scoreBox = document.getElementById('score-box');
-            const scoreDisplay = document.getElementById('score-display');
-            const scoreLabel = document.getElementById('score-label');
-
-            // 4. Gestion de l'UI Danger
             if(isDanger) {
-                scoreBox.classList.add('danger-ui');
-                scoreDisplay.innerText = "DANGER";
-                scoreDisplay.style.fontSize = "30px";
-                scoreLabel.innerText = "⚠️ RISQUE > 4% : DISCIPLINE ÉCHOUÉE";
+                box.classList.add('danger-ui');
+                disp.innerText = "DANGER";
+                disp.style.fontSize = "30px";
             } else {
-                scoreBox.classList.remove('danger-ui');
-                scoreDisplay.innerText = finalScore + "%";
-                scoreDisplay.style.fontSize = "60px";
-                scoreLabel.innerText = "Indice de Confiance";
-                scoreDisplay.style.color = finalScore >= 80 ? 'var(--green)' : 'var(--accent)';
+                box.classList.remove('danger-ui');
+                disp.innerText = final + "%";
+                disp.style.fontSize = "60px";
+                disp.style.color = final >= 80 ? 'var(--green)' : 'var(--accent)';
             }
         }
 
@@ -202,29 +181,32 @@
                 score: document.getElementById('score-display').innerText,
                 status: document.getElementById('res-val').value,
                 pl: parseFloat(document.getElementById('pl-input').value) || 0,
-                cap: parseFloat(document.getElementById('cap').value)
+                cap: parseFloat(document.getElementById('cap').value) || 0
             };
+            if(t.cap <= 0) return alert("Saisis ton capital !");
             trades.push(t);
-            localStorage.setItem('malone_final_db', JSON.stringify(trades));
-            alert("Trade enregistré !");
-            document.getElementById('pl-input').value = '';
+            localStorage.setItem('malone_v10_db', JSON.stringify(trades));
+            alert("Trade archivé !");
         }
 
         function updateJournal() {
-            const body = document.getElementById('journalBody');
-            body.innerHTML = '';
+            const b = document.getElementById('journalBody');
+            b.innerHTML = '';
             trades.slice().reverse().forEach(t => {
-                body.innerHTML += `<tr style="border-bottom:1px solid #161b22;"><td style="padding:15px;">${t.date}</td><td>${t.pair}</td><td>${t.score}</td><td style="text-transform:uppercase;">${t.status}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`;
+                b.innerHTML += `<tr style="border-bottom:1px solid #161b22;"><td style="padding:15px;">${t.date}</td><td>${t.pair}</td><td>${t.score}</td><td>${t.status.toUpperCase()}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`;
             });
         }
 
         let chart;
         function updateDashboard() {
-            let totalPl = 0, wins = 0, startCap = trades.length > 0 ? trades[0].cap : 1000;
-            let history = [startCap];
-            trades.forEach(t => { totalPl += t.pl; if(t.status === 'tp') wins++; history.push(startCap + totalPl); });
-            
-            document.getElementById('db-bal').innerText = (startCap + totalPl).toFixed(2) + "$";
+            let totalPl = 0, wins = 0;
+            let history = [trades.length > 0 ? trades[0].cap : 0];
+            trades.forEach((t, i) => { 
+                totalPl += t.pl; 
+                if(t.status === 'tp') wins++; 
+                history.push(history[i] + t.pl); 
+            });
+            document.getElementById('db-bal').innerText = (history[history.length-1]).toFixed(2) + "$";
             document.getElementById('db-pl').innerText = totalPl.toFixed(2) + "$";
             document.getElementById('db-wr').innerText = trades.length ? ((wins/trades.length)*100).toFixed(0) + "%" : "0%";
             document.getElementById('db-tr').innerText = trades.length;
@@ -233,8 +215,8 @@
             if(chart) chart.destroy();
             chart = new Chart(ctx, {
                 type: 'line',
-                data: { labels: history.map(()=>''), datasets: [{ data: history, borderColor: '#00ffa3', backgroundColor: 'rgba(0,255,163,0.05)', fill: true, tension: 0.3 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: { labels: history.map(()=>''), datasets: [{ data: history, borderColor: '#00ffa3', backgroundColor: 'rgba(0,255,163,0.05)', fill: true, tension: 0.2 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#30363d' } } } }
             });
         }
         calc();
