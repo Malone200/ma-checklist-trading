@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Checklist Trading - Discipline</title>
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --card: #15151a;
+            --accent: #00f2ff;
+            --text: #e0e0e0;
+            --danger: #ff4d4d;
+            --success: #00ff88;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #222;
+        }
+
+        h1 { text-align: center; color: var(--accent); letter-spacing: 2px; }
+
+        .progress-container {
+            background: #222;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            transition: 0.3s ease;
+        }
+
+        .rule-item {
+            background: #1c1c24;
+            margin-bottom: 12px;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .rule-item:hover { border-color: var(--accent); }
+
+        input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .risk-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+
+        .risk-input {
+            width: 100%;
+            padding: 12px;
+            background: #0a0a0c;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        #status-btn {
+            width: 100%;
+            padding: 18px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            transition: 0.3s;
+            background: #333;
+            color: #666;
+        }
+
+        .ready-btn {
+            background: var(--success) !important;
+            color: #000 !important;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+            cursor: pointer;
+        }
+
+        .warning-text {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>CHECKLIST TRADING</h1>
+    
+    <div class="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <div id="checklist">
+        <label class="rule-item">
+            <input type="checkbox" class="step"> 1. Tendance (HH/HL ou LH/LL)
+        </label>
+        <label class="rule-item">
+            <input type="checkbox" class="step"> 2. Cassure Niveau (S/R)
+        </label>
+        <label class="rule-item">
+            <input type="checkbox" class="step"> 3. Pullback effectué
+        </label>
+        <label class="rule-item">
+            <input type="checkbox" class="step"> 4. Order Block 30 min (OB30)
+        </label>
+    </div>
+
+    <div class="risk-section">
+        <label>5. Risque du Capital (%)</label>
+        <input type="number" id="riskValue" class="risk-input" placeholder="Ex: 2" oninput="updateProgress()">
+        <p id="riskWarning" class="warning-text">⚠️ Risque trop élevé ! Maximum 5%.</p>
+    </div>
+
+    <button id="status-btn" disabled>DISCIPLINE REQUISE</button>
+</div>
+
+<script>
+    function updateProgress() {
+        const checkboxes = document.querySelectorAll('.step');
+        const checked = Array.from(checkboxes).filter(c => c.checked).length;
+        const riskInput = document.getElementById('riskValue');
+        const risk = parseFloat(riskInput.value) || 0;
+        const warning = document.getElementById('riskWarning');
+        const btn = document.getElementById('status-btn');
+        const bar = document.getElementById('progress-bar');
+
+        // Logique du Risque
+        let riskValid = risk > 0 && risk <= 5;
+        warning.style.display = (risk > 5) ? 'block' : 'none';
+
+        // Calcul de la barre (4 cases + le risque = 5 étapes)
+        let totalSteps = checkboxes.length + 1;
+        let currentProgress = checked + (riskValid ? 1 : 0);
+        let percentage = (currentProgress / totalSteps) * 100;
+        
+        bar.style.width = percentage + "%";
+
+        // Activation du bouton
+        if (checked === checkboxes.length && riskValid) {
+            btn.disabled = false;
+            btn.classList.add('ready-btn');
+            btn.innerText = "ACCORD DE TRADE";
+        } else {
+            btn.disabled = true;
+            btn.classList.remove('ready-btn');
+            btn.innerText = "DISCIPLINE REQUISE";
+        }
+    }
+
+    document.querySelectorAll('.step').forEach(checkbox => {
+        checkbox.addEventListener('change', updateProgress);
+    });
+</script>
+
+</body>
+</html>
