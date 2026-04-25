@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_ULTIMATE_V10</title>
+    <title>MALONE_ULTIMATE_V11</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -23,13 +23,13 @@
         .check-row input { width: 18px; height: 18px; accent-color: var(--accent); }
         .score-box { text-align: center; padding: 25px; border-radius: 10px; border: 2px solid var(--border); background: rgba(0,0,0,0.4); }
         .score-val { font-family: 'Orbitron'; font-size: 60px; display: block; }
-        .danger-ui { border-color: var(--red) !important; color: var(--red) !important; animation: pulse 1s infinite; }
-        @keyframes pulse { 50% { opacity: 0.7; } }
         .input-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
         label { display: block; font-size: 10px; color: var(--text-dim); margin-bottom: 5px; text-transform: uppercase; }
         input, select { width: 100%; background: #161b22; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
-        .btn-action { background: var(--green); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; margin-top: 15px; }
-        optgroup { background: #0d1117; color: var(--accent); font-style: normal; }
+        .btn-action { background: var(--green); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+        .btn-action:hover { opacity: 0.8; transform: scale(0.98); }
+        .active-trade-row { background: #1c2128; border: 1px solid var(--accent); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .btn-close { background: var(--red); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-size: 10px; }
     </style>
 </head>
 <body>
@@ -42,85 +42,69 @@
 
     <div id="dashboard" class="page active">
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom:20px;">
-            <div class="glass-card" style="text-align:center;"><span>EQUITY ACTUELLE</span><br><b id="db-bal" style="font-size:24px; color:var(--accent);">0.00$</b></div>
+            <div class="glass-card" style="text-align:center;"><span>EQUITY</span><br><b id="db-bal" style="font-size:24px; color:var(--accent);">0.00$</b></div>
             <div class="glass-card" style="text-align:center;"><span>P/L TOTAL</span><br><b id="db-pl" style="font-size:24px;">0.00$</b></div>
             <div class="glass-card" style="text-align:center;"><span>WIN RATE</span><br><b id="db-wr" style="font-size:24px;">0%</b></div>
-            <div class="glass-card" style="text-align:center;"><span>TOTAL TRADES</span><br><b id="db-tr" style="font-size:24px;">0</b></div>
+            <div class="glass-card" style="text-align:center;"><span>TRADES</span><br><b id="db-tr" style="font-size:24px;">0</b></div>
         </div>
         <div class="glass-card">
-            <h3>📈 PROGRESSION DU COMPTE</h3>
-            <div style="height: 380px;"><canvas id="equityChart"></canvas></div>
+            <h3>📉 TRADES EN COURS</h3>
+            <div id="activeTradesContainer">
+                </div>
+        </div>
+        <div class="glass-card">
+            <h3>📈 PROGRESSION</h3>
+            <div style="height: 300px;"><canvas id="equityChart"></canvas></div>
         </div>
     </div>
 
     <div id="hub" class="page">
         <div class="layout-hub">
             <div class="glass-card">
-                <h3>🛡️ CHECKLIST MALONE (80%)</h3>
+                <h3>🛡️ VALIDATION STRATÉGIE</h3>
                 <div class="check-grid">
-                    <div class="check-row">1. Structure Fond D1/H4/H1 <span style="color:var(--accent)">20%</span> <input type="checkbox" class="cb" data-p="20" onchange="calc()"></div>
-                    <div class="check-row">2. Cassure de la tendance <span style="color:var(--accent)">15%</span> <input type="checkbox" class="cb" data-p="15" onchange="calc()"></div>
-                    <div class="check-row">3. Zone SMMA / Supply-Demand <span style="color:var(--accent)">10%</span> <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">4. Timeframe 1H & 2H Alignés <span style="color:var(--accent)">10%</span> <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">5. Order block (30m/1H/4H/D1) <span style="color:var(--accent)">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">6. RSI divergence (30m/1H/4H) <span style="color:var(--accent)">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">7. Double Break & Confirm <span style="color:var(--accent)">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">8. Pullback effectué <span style="color:var(--accent)">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">9. Impact psy maîtrisé <span style="color:var(--accent)">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row" style="background:rgba(0,212,255,0.05); border-left-color:var(--accent);">
-                        10. DISCIPLINE RISQUE <span id="risk-bonus-ui" style="color:var(--accent); font-weight:bold;">0%</span>
-                    </div>
+                    <div class="check-row">1. Structure Fond D1/H4/H1 <input type="checkbox" class="cb" data-p="20" onchange="calc()"></div>
+                    <div class="check-row">2. Cassure de tendance <input type="checkbox" class="cb" data-p="15" onchange="calc()"></div>
+                    <div class="check-row">3. Zone SMMA / S-D <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">4. Timeframes Alignés <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">5. Order block <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">6. RSI divergence <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">7. Double Break <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">8. Pullback effectué <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">9. Psychologie prête <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row" style="border-left-color:var(--accent);">DISCIPLINE RISQUE <span id="risk-bonus-ui">0%</span></div>
                 </div>
-                <div class="score-box" id="score-box" style="margin-top: 25px;">
-                    <span id="score-label" style="font-size: 11px; text-transform: uppercase;">Validation du Trade</span>
+                <div class="score-box" style="margin-top:20px;">
                     <b class="score-val" id="score-display">0%</b>
                 </div>
             </div>
 
             <div class="glass-card">
-                <h3>⚙️ CALCULATEUR & ACTIFS</h3>
+                <h3>⚙️ EXÉCUTION</h3>
                 <div class="input-group">
-                    <div><label>TON CAPITAL ($)</label><input type="number" id="cap" placeholder="Ex: 200" oninput="calc()"></div>
-                    <div><label>RISQUE %</label><input type="number" id="risk" placeholder="Ex: 1" step="0.5" oninput="calc()"></div>
+                    <div><label>CAPITAL ($)</label><input type="number" id="cap" placeholder="200" oninput="calc()"></div>
+                    <div><label>RISQUE %</label><input type="number" id="risk" placeholder="1" oninput="calc()"></div>
                     <div><label>SL PIPS</label><input type="number" id="sl" placeholder="10" oninput="calc()"></div>
                 </div>
-
-                <div style="background: #000; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--green); margin-bottom: 20px;">
-                    <span style="color: var(--text-dim); font-size: 10px;">LOT MT5 CONSEILLÉ</span>
-                    <div id="lot-final" style="font-family: 'Orbitron'; font-size: 36px; color: var(--green);">0.00</div>
+                <div style="background: #000; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid var(--green); margin-bottom: 15px;">
+                    <span style="font-size: 10px;">LOT MT5</span>
+                    <div id="lot-final" style="font-size: 32px; color: var(--green); font-family:'Orbitron'">0.00</div>
                 </div>
-
-                <label>CHOISIR L'ACTIF</label>
+                <label>ACTIF</label>
                 <select id="pair">
-                    <optgroup label="INDICES">
-                        <option>NAS100</option><option>US30</option><option>SP500</option><option>GER40</option>
-                    </optgroup>
-                    <optgroup label="FOREX">
-                        <option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>AUD/USD</option>
-                        <option>USD/CHF</option><option>USD/CAD</option><option>NZD/USD</option><option>EUR/GBP</option>
-                        <option>GBP/JPY</option><option>EUR/AUD</option><option>GBP/CAD</option><option>EUR/CHF</option>
-                        <option>CHF/JPY</option><option>GBP/CHF</option><option>EUR/JPY</option>
-                    </optgroup>
-                    <optgroup label="METALS / OIL">
-                        <option>XAUUSD (GOLD)</option><option>XAGUSD (SILVER)</option><option>WTI (OIL)</option>
-                    </optgroup>
+                    <option>NAS100</option><option>US30</option><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option>
                 </select>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:15px;">
-                    <div><label>RÉSULTAT</label><select id="res-val"><option value="tp">✅ TP</option><option value="sl">❌ SL</option><option value="be">🛡️ BE</option></select></div>
-                    <div><label>P/L RÉEL ($)</label><input type="number" id="pl-input" placeholder="Ex: 40"></div>
-                </div>
-                <button class="btn-action" onclick="saveTrade()">ARCHIVER DANS LE JOURNAL</button>
+                <button class="btn-action" onclick="launchTrade()">LANCER LA POSITION</button>
             </div>
         </div>
     </div>
 
     <div id="journal" class="page">
         <div class="glass-card">
-            <h3>📜 JOURNAL HISTORIQUE</h3>
+            <h3>📜 HISTORIQUE FINAL</h3>
             <table style="width:100%; border-collapse:collapse; font-size: 14px;">
-                <thead style="text-align:left; color:var(--text-dim); border-bottom: 1px solid var(--border);">
-                    <tr><th style="padding:15px;">DATE</th><th>ACTIF</th><th>SCORE</th><th>STATUT</th><th>P/L ($)</th></tr>
+                <thead style="color:var(--text-dim); text-align:left; border-bottom:1px solid var(--border);">
+                    <tr><th style="padding:10px;">DATE</th><th>ACTIF</th><th>SCORE</th><th>RÉSULTAT</th><th>P/L ($)</th></tr>
                 </thead>
                 <tbody id="journalBody"></tbody>
             </table>
@@ -128,98 +112,118 @@
     </div>
 
     <script>
-        let trades = JSON.parse(localStorage.getItem('malone_v10_db')) || [];
+        let trades = JSON.parse(localStorage.getItem('malone_v11_history')) || [];
+        let activeTrades = JSON.parse(localStorage.getItem('malone_v11_active')) || [];
 
         function openPage(e, id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             e.currentTarget.classList.add('active');
-            if(id === 'dashboard') updateDashboard();
-            if(id === 'journal') updateJournal();
+            updateUI();
         }
 
         function calc() {
             const cap = parseFloat(document.getElementById('cap').value) || 0;
             const r = parseFloat(document.getElementById('risk').value) || 0;
             const sl = parseFloat(document.getElementById('sl').value) || 1;
-            
             document.getElementById('lot-final').innerText = cap > 0 ? ((cap * (r/100)) / (sl * 10)).toFixed(2) : "0.00";
 
-            let baseScore = 0;
-            document.querySelectorAll('.cb').forEach(c => { if(c.checked) baseScore += parseInt(c.getAttribute('data-p')); });
+            let score = 0;
+            document.querySelectorAll('.cb').forEach(c => { if(c.checked) score += parseInt(c.getAttribute('data-p')); });
+            let bonus = r <= 1 ? 20 : (r <= 2 ? 15 : 10);
+            if(r > 4) bonus = 0;
+            document.getElementById('risk-bonus-ui').innerText = bonus + "%";
+            document.getElementById('score-display').innerText = (score + bonus) + "%";
+        }
 
-            let riskBonus = 0;
-            let isDanger = false;
-            if (r > 0 && r <= 1) riskBonus = 20;
-            else if (r > 1 && r <= 2) riskBonus = 15;
-            else if (r > 2 && r <= 3) riskBonus = 10;
-            else if (r > 3 && r <= 4) riskBonus = 5;
-            else if (r > 4) isDanger = true;
+        function launchTrade() {
+            const cap = parseFloat(document.getElementById('cap').value);
+            if(!cap) return alert("Saisis ton capital !");
+            const t = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString(),
+                pair: document.getElementById('pair').value,
+                score: document.getElementById('score-display').innerText,
+                lot: document.getElementById('lot-final').innerText,
+                initialCap: cap
+            };
+            activeTrades.push(t);
+            localStorage.setItem('malone_v11_active', JSON.stringify(activeTrades));
+            alert("Position ouverte ! Va sur le Dashboard pour la suivre.");
+            openPage({currentTarget: document.querySelector('.nav-item')}, 'dashboard');
+        }
 
-            document.getElementById('risk-bonus-ui').innerText = riskBonus + "%";
-            const final = baseScore + riskBonus;
-            const box = document.getElementById('score-box');
-            const disp = document.getElementById('score-display');
+        function closeTrade(id) {
+            const pl = prompt("Résultat du trade en Dollars ($) ? (Ex: 50 ou -30)");
+            if (pl === null) return;
+            
+            const idx = activeTrades.findIndex(x => x.id === id);
+            const t = activeTrades.splice(idx, 1)[0];
+            
+            const finishedTrade = {
+                ...t,
+                pl: parseFloat(pl),
+                status: parseFloat(pl) >= 0 ? 'TP' : 'SL'
+            };
+            
+            trades.push(finishedTrade);
+            localStorage.setItem('malone_v11_active', JSON.stringify(activeTrades));
+            localStorage.setItem('malone_v11_history', JSON.stringify(trades));
+            updateUI();
+        }
 
-            if(isDanger) {
-                box.classList.add('danger-ui');
-                disp.innerText = "DANGER";
-                disp.style.fontSize = "30px";
-            } else {
-                box.classList.remove('danger-ui');
-                disp.innerText = final + "%";
-                disp.style.fontSize = "60px";
-                disp.style.color = final >= 80 ? 'var(--green)' : 'var(--accent)';
+        function updateUI() {
+            // Dashboard Active Trades
+            const container = document.getElementById('activeTradesContainer');
+            container.innerHTML = activeTrades.length ? '' : '<p style="color:var(--text-dim)">Aucune position en cours.</p>';
+            activeTrades.forEach(t => {
+                container.innerHTML += `
+                    <div class="active-trade-row">
+                        <div><b>${t.pair}</b> <small style="color:var(--accent)">Lot: ${t.lot}</small> | Score: ${t.score}</div>
+                        <button class="btn-close" onclick="closeTrade(${t.id})">CLÔTURER LE TRADE</button>
+                    </div>`;
+            });
+
+            // Journal
+            const b = document.getElementById('journalBody');
+            if(b) {
+                b.innerHTML = '';
+                trades.slice().reverse().forEach(t => {
+                    b.innerHTML += `<tr style="border-bottom:1px solid #161b22;"><td style="padding:10px;">${t.date}</td><td>${t.pair}</td><td>${t.score}</td><td>${t.status}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`;
+                });
+            }
+
+            // Stats
+            let totalPl = 0, wins = 0;
+            let history = [trades.length > 0 ? trades[0].initialCap : 0];
+            trades.forEach((t, i) => { 
+                totalPl += t.pl; 
+                if(t.status === 'TP') wins++; 
+                history.push(history[i] + t.pl); 
+            });
+            
+            if(document.getElementById('db-bal')) {
+                document.getElementById('db-bal').innerText = (history[history.length-1]).toFixed(2) + "$";
+                document.getElementById('db-pl').innerText = totalPl.toFixed(2) + "$";
+                document.getElementById('db-wr').innerText = trades.length ? ((wins/trades.length)*100).toFixed(0) + "%" : "0%";
+                document.getElementById('db-tr').innerText = trades.length;
+                updateChart(history);
             }
         }
 
-        function saveTrade() {
-            const t = {
-                date: new Date().toLocaleDateString('fr-FR'),
-                pair: document.getElementById('pair').value,
-                score: document.getElementById('score-display').innerText,
-                status: document.getElementById('res-val').value,
-                pl: parseFloat(document.getElementById('pl-input').value) || 0,
-                cap: parseFloat(document.getElementById('cap').value) || 0
-            };
-            if(t.cap <= 0) return alert("Saisis ton capital !");
-            trades.push(t);
-            localStorage.setItem('malone_v10_db', JSON.stringify(trades));
-            alert("Trade archivé !");
-        }
-
-        function updateJournal() {
-            const b = document.getElementById('journalBody');
-            b.innerHTML = '';
-            trades.slice().reverse().forEach(t => {
-                b.innerHTML += `<tr style="border-bottom:1px solid #161b22;"><td style="padding:15px;">${t.date}</td><td>${t.pair}</td><td>${t.score}</td><td>${t.status.toUpperCase()}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`;
-            });
-        }
-
         let chart;
-        function updateDashboard() {
-            let totalPl = 0, wins = 0;
-            let history = [trades.length > 0 ? trades[0].cap : 0];
-            trades.forEach((t, i) => { 
-                totalPl += t.pl; 
-                if(t.status === 'tp') wins++; 
-                history.push(history[i] + t.pl); 
-            });
-            document.getElementById('db-bal').innerText = (history[history.length-1]).toFixed(2) + "$";
-            document.getElementById('db-pl').innerText = totalPl.toFixed(2) + "$";
-            document.getElementById('db-wr').innerText = trades.length ? ((wins/trades.length)*100).toFixed(0) + "%" : "0%";
-            document.getElementById('db-tr').innerText = trades.length;
-
+        function updateChart(data) {
             const ctx = document.getElementById('equityChart').getContext('2d');
             if(chart) chart.destroy();
             chart = new Chart(ctx, {
                 type: 'line',
-                data: { labels: history.map(()=>''), datasets: [{ data: history, borderColor: '#00ffa3', backgroundColor: 'rgba(0,255,163,0.05)', fill: true, tension: 0.2 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#30363d' } } } }
+                data: { labels: data.map(()=>''), datasets: [{ data: data, borderColor: '#00ffa3', tension: 0.2, fill: true, backgroundColor: 'rgba(0,255,163,0.05)' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
-        calc();
+
+        updateUI();
     </script>
 </body>
 </html>
