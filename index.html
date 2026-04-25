@@ -2,193 +2,162 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ma Checklist Trading - Discipline</title>
+    <title>CHECKLIST_MALONE</title>
     <style>
-        :root {
-            --bg: #0a0a0c;
-            --card: #15151a;
-            --accent: #00f2ff;
-            --text: #e0e0e0;
-            --danger: #ff4d4d;
-            --success: #00ff88;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            padding: 40px 20px;
-            margin: 0;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background: var(--card);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid #222;
-        }
-
-        h1 { text-align: center; color: var(--accent); letter-spacing: 2px; }
-
-        .progress-container {
-            background: #222;
-            height: 10px;
-            border-radius: 5px;
-            margin-bottom: 30px;
-            overflow: hidden;
-        }
-
-        #progress-bar {
-            width: 0%;
-            height: 100%;
-            background: var(--accent);
-            box-shadow: 0 0 10px var(--accent);
-            transition: 0.3s ease;
-        }
-
-        .rule-item {
-            background: #1c1c24;
-            margin-bottom: 12px;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: 0.2s;
-        }
-
-        .rule-item:hover { border-color: var(--accent); }
-
-        input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
-            margin-right: 15px;
-            cursor: pointer;
-            accent-color: var(--accent);
-        }
-
-        .risk-section {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #333;
-        }
-
-        .risk-input {
-            width: 100%;
-            padding: 12px;
-            background: #0a0a0c;
-            border: 1px solid #444;
-            color: white;
-            border-radius: 5px;
-            margin-top: 10px;
-            font-size: 16px;
-        }
-
-        #status-btn {
-            width: 100%;
-            padding: 18px;
-            margin-top: 30px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            transition: 0.3s;
-            background: #333;
-            color: #666;
-        }
-
-        .ready-btn {
-            background: var(--success) !important;
-            color: #000 !important;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
-            cursor: pointer;
-        }
-
-        .warning-text {
-            color: var(--danger);
-            font-size: 0.85rem;
-            margin-top: 5px;
-            display: none;
-        }
+        body{ margin:0; background:#0f1b2e; color:white; font-family:Arial; }
+        .wrap{padding:20px;}
+        .title{color: #00d36f; letter-spacing: 2px;}
+        .cols{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+        .col{ background:#112233; padding:15px; border-radius:10px; border: 1px solid #1f6b5a; }
+        h3{ font-size: 14px; margin-top: 0; color: #00d36f; }
+        label { display: block; margin-bottom: 8px; font-size: 13px; cursor: pointer; }
+        .bottom{ margin-top:20px; display:flex; justify-content:space-between; background:#1f6b5a; padding:20px; border-radius:15px; align-items: center; }
+        .big-score{font-size:70px; font-weight: bold;}
+        .progress-wrap{height:12px; background:rgba(0,0,0,0.3); margin-top:10px; border-radius: 6px; overflow: hidden;}
+        .progress{height:100%; width:0; background:#00d36f; transition: 0.5s;}
+        button{ margin-top:10px; padding:10px; border:none; border-radius:8px; cursor:pointer; background: #0f1b2e; color: white; font-weight: bold; width: 100%;}
+        .risk-input { width: 100%; padding: 10px; background: #0a111d; border: 1px solid #00d36f; color: #00d36f; font-size: 18px; font-weight: bold; border-radius: 5px; box-sizing: border-box; }
+        .danger { border-color: #ff4d4d !important; color: #ff4d4d !important; }
+        table{width:100%; margin-top:25px; border-collapse:collapse; background: #112233;}
+        td,th{border:1px solid #333; padding:10px; text-align:center;}
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>CHECKLIST TRADING</h1>
-    
-    <div class="progress-container">
-        <div id="progress-bar"></div>
+<div class="wrap">
+    <h1 class="title">CHECKLIST_MALONE</h1>
+
+    <div class="cols">
+        <div class="col">
+            <h3>Structure & Tendance</h3>
+            <label><input type="checkbox" class="check" value="20"> 1. Structure Fond D1/H4/H1 (20%)</label>
+            <label><input type="checkbox" class="check" value="15"> 2. Cassure de la tendance (15%)</label>
+            <label><input type="checkbox" class="check" value="10"> 3. Zone SMMA / Supply-Demand (10%)</label>
+        </div>
+        <div class="col">
+            <h3>Technique & Zones</h3>
+            <label><input type="checkbox" class="check" value="10"> 4. TF 1H et 2H Alignés (10%)</label>
+            <label><input type="checkbox" class="check" value="5"> 5. OB (30m à W1) (5%)</label>
+            <label><input type="checkbox" class="check" value="5"> 6. RSI Divergence (5%)</label>
+        </div>
+        <div class="col">
+            <h3>Confirmation & Psy</h3>
+            <label><input type="checkbox" class="check" value="5"> 7. Double Break & Confirm (5%)</label>
+            <label><input type="checkbox" class="check" value="5"> 8. Pullback (5%)</label>
+            <label><input type="checkbox" class="check" value="5"> 9. Impact psy maîtrisé (5%)</label>
+        </div>
     </div>
 
-    <div id="checklist">
-        <label class="rule-item">
-            <input type="checkbox" class="step"> 1. Tendance (HH/HL ou LH/LL)
-        </label>
-        <label class="rule-item">
-            <input type="checkbox" class="step"> 2. Cassure Niveau (S/R)
-        </label>
-        <label class="rule-item">
-            <input type="checkbox" class="step"> 3. Pullback effectué
-        </label>
-        <label class="rule-item">
-            <input type="checkbox" class="step"> 4. Order Block 30 min (OB30)
-        </label>
+    <div class="col" style="margin-top: 15px; border: 2px solid #00d36f;" id="riskBox">
+        <h3>10. GESTION DU RISQUE (MAX 4%)</h3>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="flex: 1;">
+                <label>Entre ton risque (%) :</label>
+                <input type="number" id="riskValue" class="risk-input" value="1" step="0.1" oninput="update()">
+            </div>
+            <div style="flex: 1; font-size: 14px;" id="riskDesc">
+                Bonus Risque : <span style="color:#00d36f; font-weight:bold;">+20%</span> (Risque 1%)
+            </div>
+        </div>
     </div>
 
-    <div class="risk-section">
-        <label>5. Risque du Capital (%)</label>
-        <input type="number" id="riskValue" class="risk-input" placeholder="Ex: 2" oninput="updateProgress()">
-        <p id="riskWarning" class="warning-text">⚠️ Risque trop élevé ! Maximum 5%.</p>
+    <div class="bottom">
+        <div style="flex:1; padding-right: 40px;">
+            <div id="progress-label">Score de Confirmation: 0%</div>
+            <div class="progress-wrap">
+                <div id="progress" class="progress"></div>
+            </div>
+            <button onclick="resetAll()">RÉINITIALISER TOUT</button>
+        </div>
+        <div style="text-align: center;">
+            <div id="total" class="big-score">0%</div>
+            <div id="status" style="font-weight: bold;">DISCIPLINE !</div>
+        </div>
     </div>
-
-    <button id="status-btn" disabled>DISCIPLINE REQUISE</button>
 </div>
 
 <script>
-    function updateProgress() {
-        const checkboxes = document.querySelectorAll('.step');
-        const checked = Array.from(checkboxes).filter(c => c.checked).length;
-        const riskInput = document.getElementById('riskValue');
+    function update() {
+        let scoreFixe = 0;
+        document.querySelectorAll(".check").forEach(el => {
+            if(el.checked) scoreFixe += Number(el.value);
+        });
+
+        const riskInput = document.getElementById("riskValue");
         const risk = parseFloat(riskInput.value) || 0;
-        const warning = document.getElementById('riskWarning');
-        const btn = document.getElementById('status-btn');
-        const bar = document.getElementById('progress-bar');
-
-        // Logique du Risque
-        let riskValid = risk > 0 && risk <= 5;
-        warning.style.display = (risk > 5) ? 'block' : 'none';
-
-        // Calcul de la barre (4 cases + le risque = 5 étapes)
-        let totalSteps = checkboxes.length + 1;
-        let currentProgress = checked + (riskValid ? 1 : 0);
-        let percentage = (currentProgress / totalSteps) * 100;
+        const riskBox = document.getElementById("riskBox");
+        const riskDesc = document.getElementById("riskDesc");
         
-        bar.style.width = percentage + "%";
+        let bonusRisque = 0;
+        let isDanger = false;
 
-        // Activation du bouton
-        if (checked === checkboxes.length && riskValid) {
-            btn.disabled = false;
-            btn.classList.add('ready-btn');
-            btn.innerText = "ACCORD DE TRADE";
+        // Logique Malone pour le risque
+        if (risk <= 0) {
+            bonusRisque = 0;
+            riskDesc.innerHTML = "Risque invalide";
+        } else if (risk <= 1.0) {
+            bonusRisque = 20;
+            riskDesc.innerHTML = "Bonus Risque : <span style='color:#00d36f'>+20%</span> (Parfait)";
+        } else if (risk <= 2.0) {
+            bonusRisque = 15;
+            riskDesc.innerHTML = "Bonus Risque : <span style='color:#00d36f'>+15%</span> (Prudent)";
+        } else if (risk <= 3.0) {
+            bonusRisque = 10;
+            riskDesc.innerHTML = "Bonus Risque : <span style='color:#ffcc00'>+10%</span> (Modéré)";
+        } else if (risk <= 4.0) {
+            bonusRisque = 5;
+            riskDesc.innerHTML = "Bonus Risque : <span style='color:#ffcc00'>+5%</span> (Limite)";
         } else {
-            btn.disabled = true;
-            btn.classList.remove('ready-btn');
-            btn.innerText = "DISCIPLINE REQUISE";
+            bonusRisque = 0;
+            isDanger = true;
+            riskDesc.innerHTML = "<span style='color:#ff4d4d; font-weight:bold;'>⚠️ RISQUE TROP ÉLEVÉ (0%)</span>";
+        }
+
+        // Changement de couleur si danger
+        if(isDanger) {
+            riskInput.classList.add("danger");
+            riskBox.style.borderColor = "#ff4d4d";
+        } else {
+            riskInput.classList.remove("danger");
+            riskBox.style.borderColor = "#00d36f";
+        }
+
+        let totalFinal = scoreFixe + bonusRisque;
+        if(totalFinal > 100) totalFinal = 100;
+
+        document.getElementById("total").textContent = totalFinal + "%";
+        document.getElementById("progress").style.width = totalFinal + "%";
+        document.getElementById("progress-label").textContent = "Score de Confirmation: " + totalFinal + "%";
+
+        // Status
+        const status = document.getElementById("status");
+        if(isDanger) {
+            status.textContent = "STOP : RISQUE REJETÉ";
+            status.style.color = "#ff4d4d";
+        } else if(totalFinal === 100) {
+            status.textContent = "🔥 TRADE VALIDÉ";
+            status.style.color = "#00ffa3";
+        } else if(totalFinal >= 70) {
+            status.textContent = "✅ ZONE D'ENTRÉE";
+            status.style.color = "#00d36f";
+        } else {
+            status.textContent = "DISCIPLINE !";
+            status.style.color = "white";
         }
     }
 
-    document.querySelectorAll('.step').forEach(checkbox => {
-        checkbox.addEventListener('change', updateProgress);
+    document.querySelectorAll(".check").forEach(el => {
+        el.addEventListener("change", update);
     });
+
+    function resetAll() {
+        document.querySelectorAll(".check").forEach(el => el.checked = false);
+        document.getElementById("riskValue").value = 1;
+        update();
+    }
+
+    // Initialisation
+    update();
 </script>
 
 </body>
