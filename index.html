@@ -3,210 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_PRO_ANALYTICS_V5</title>
+    <title>MALONE_PRO_MULTI_PAGE</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg: #0b0e14;
-            --panel: #151921;
+            --bg: #06070a;
+            --panel: #0f111a;
             --accent: #00d4ff;
             --green: #00ffa3;
             --red: #ff4d4d;
             --text: #ffffff;
-            --text-dim: #94a3b8;
-            --border: #2d343f;
+            --border: #1f2937;
         }
 
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; overflow-x: hidden; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+
+        /* BARRE DE NAVIGATION (TABS) */
+        .nav-bar {
+            display: flex;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+        }
+        .nav-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            color: #94a3b8;
+            border-bottom: 3px solid transparent;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .nav-item:hover { color: var(--accent); }
+        .nav-item.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        /* CONTENU DES PAGES */
+        .page {
+            display: none; /* Caché par défaut */
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .page.active { display: block; }
+
+        /* DESIGN DES PANNEAUX */
+        .grid-dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+        .stat-card span { font-size: 11px; color: #94a3b8; text-transform: uppercase; }
+        .stat-card b { font-size: 24px; color: var(--accent); display: block; margin-top: 5px; }
+
+        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        h3 { margin-top: 0; font-size: 14px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* FORMULAIRES */
+        .flex-row { display: flex; gap: 15px; flex-wrap: wrap; }
+        .input-box { flex: 1; min-width: 200px; margin-bottom: 15px; }
+        input, select, textarea { width: 100%; padding: 12px; background: #06070a; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
         
-        /* Stats Top Row */
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
-        .stat-box { background: var(--panel); border: 1px solid var(--border); padding: 15px; border-radius: 12px; }
-        .stat-box b { font-size: 24px; display: block; margin-top: 5px; color: var(--accent); }
-        .stat-box span { font-size: 11px; color: var(--text-dim); text-transform: uppercase; }
+        .check-item { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid transparent; }
+        .check-item:hover { border-color: var(--accent); }
 
-        .main-layout { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
+        .btn-save { background: var(--green); color: #000; border: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; width: 100%; font-size: 14px; }
 
-        /* Columns */
-        .side-panel { background: var(--panel); border-radius: 15px; padding: 20px; border: 1px solid var(--border); }
-        h3 { font-size: 13px; color: var(--accent); margin-top: 0; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
-        
-        .check-item { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid transparent; font-size: 13px;}
-        .check-item input { margin-right: 12px; accent-color: var(--accent); }
+        /* JOURNAL TABLE */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: var(--panel); }
+        th { text-align: left; padding: 15px; background: #1c222d; color: #94a3b8; font-size: 12px; }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .badge-tp { color: var(--green); font-weight: bold; }
+        .badge-sl { color: var(--red); font-weight: bold; }
 
-        .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        input, select, textarea { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; box-sizing: border-box; font-size: 13px; }
-        
-        /* Score */
-        .score-circle { width: 100px; height: 100px; border-radius: 50%; border: 5px solid var(--border); margin: 20px auto; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; }
-
-        /* Graphics */
-        .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 250px; margin-bottom: 20px; }
-        .chart-box { background: var(--panel); border-radius: 15px; padding: 15px; border: 1px solid var(--border); }
-
-        /* Journal */
-        .journal-container { background: var(--panel); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th { background: #1c222d; padding: 12px; text-align: left; color: var(--text-dim); }
-        td { padding: 12px; border-bottom: 1px solid var(--border); }
-        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; }
-        .win { background: rgba(0,255,163,0.1); color: var(--green); }
-        .loss { background: rgba(255,77,77,0.1); color: var(--red); }
-
-        .btn-action { background: var(--green); color: #000; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 15px; }
-        optgroup { background: #151921; color: var(--accent); font-style: normal; }
+        .chart-container { height: 350px; width: 100%; }
     </style>
 </head>
 <body>
 
-    <div class="stats-grid">
-        <div class="stat-box"><span>Profits/Pertes Totaux</span><b id="stat-total-pl">0.00$</b></div>
-        <div class="stat-box"><span>Win Rate (%)</span><b id="stat-winrate">0%</b></div>
-        <div class="stat-box"><span>Trades Gagnants</span><b id="stat-wins">0</b></div>
-        <div class="stat-box"><span>Total Trades</span><b id="stat-total">0</b></div>
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="openPage(event, 'dashboard')">🏠 Dashboard</div>
+        <div class="nav-item" onclick="openPage(event, 'hub')">🛡️ Trading Hub</div>
+        <div class="nav-item" onclick="openPage(event, 'journal')">📜 Journal Historique</div>
     </div>
 
-    <div class="main-layout">
-        <div class="side-panel">
-            <h3>⚙️ Paramètres & Risque</h3>
-            <div class="input-group">
-                <div><label>Capital ($)</label><input type="number" id="capital" value="1000" oninput="updateLogic()"></div>
-                <div><label>Risque (%)</label><input type="number" id="risk" value="1" oninput="updateLogic()" step="0.5"></div>
-            </div>
-            <label>Stop Loss (Pips)</label>
-            <input type="number" id="sl" value="10" oninput="updateLogic()">
-            
-            <div style="background:#0b0e14; padding:15px; border-radius:10px; text-align:center; margin-bottom:15px;">
-                <span style="font-size:10px; color:var(--text-dim)">LOT MT5 :</span>
-                <div id="lotDisplay" style="font-size:32px; font-weight:bold; color:var(--green)">0.10</div>
-            </div>
-
-            <h3>🛡️ Checklist Malone</h3>
-            <div id="checklist">
-                <label class="check-item"><input type="checkbox" class="cb" data-p="20" onchange="updateLogic()"> Structure H4/H1 <span class="percent">20%</span></label>
-                <label class="check-item"><input type="checkbox" class="cb" data-p="15" onchange="updateLogic()"> Cassure Tendance <span class="percent">15%</span></label>
-                <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="updateLogic()"> Zone S-D / SMMA <span class="percent">10%</span></label>
-                <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="updateLogic()"> TF Alignés <span class="percent">10%</span></label>
-                <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="updateLogic()"> Absence News <span class="percent">10%</span></label>
-                <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="updateLogic()"> Ratio RR > 2 <span class="percent">10%</span></label>
-                <label class="check-item"><input type="checkbox" class="cb" data-p="5" onchange="updateLogic()"> Order Block <span class="percent">5%</span></label>
-            </div>
-
-            <div id="scoreCircle" class="score-circle">0%</div>
-            <div id="riskWarning" style="text-align:center; font-size:11px; font-weight:bold;"></div>
+    <div id="dashboard" class="page active">
+        <div class="grid-dashboard">
+            <div class="stat-card"><span>Balance Totale</span><b id="db-balance">1000.00$</b></div>
+            <div class="stat-card"><span>Profit/Perte Total</span><b id="db-pl">0.00$</b></div>
+            <div class="stat-card"><span>Win Rate</span><b id="db-wr">0%</b></div>
+            <div class="stat-card"><span>Total Trades</span><b id="db-count">0</b></div>
         </div>
-
-        <div class="data-panel">
-            <div class="chart-row">
-                <div class="chart-box"><h3>Evolution Capital</h3><canvas id="chartEquity"></canvas></div>
-                <div class="chart-box"><h3>Performance Mensuelle</h3><canvas id="chartMonthly"></canvas></div>
+        <div class="card">
+            <h3>📈 Progression de l'Équité</h3>
+            <div class="chart-container">
+                <canvas id="equityChart"></canvas>
             </div>
+        </div>
+    </div>
 
-            <div class="side-panel" style="padding:15px;">
-                <h3>📊 Nouvel Enregistrement</h3>
-                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;">
-                    <select id="pair">
-                        <optgroup label="INDICES">
-                            <option>NAS100</option><option>US30</option><option>SP500</option><option>GER40</option>
-                        </optgroup>
-                        <optgroup label="FOREX MAJOR">
-                            <option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option><option>AUDUSD</option><option>USDCAD</option>
-                        </optgroup>
-                        <optgroup label="FOREX MINOR">
-                            <option>EURGBP</option><option>GBPJPY</option><option>EURAUD</option><option>AUDJPY</option>
-                        </optgroup>
-                        <optgroup label="MATIÈRES PREMIÈRES">
-                            <option>GOLD (XAUUSD)</option><option>SILVER (XAGUSD)</option><option>PÉTROLE (WTI)</option>
-                        </optgroup>
-                    </select>
-                    <select id="dir"><option value="buy">🟢 ACHAT</option><option value="sell">🔴 VENTE</option></select>
-                    <select id="res"><option value="tp">✅ TP</option><option value="sl">❌ SL</option><option value="be">🛡️ BE</option></select>
-                    <input type="number" id="pl" placeholder="P/L ($)">
+    <div id="hub" class="page">
+        <div class="flex-row">
+            <div class="card" style="flex: 1;">
+                <h3>⚙️ Calculateur & Risque</h3>
+                <div class="input-box"><label>Capital ($)</label><input type="number" id="cap" value="1000" oninput="calc()"></div>
+                <div class="input-box"><label>Risque (%)</label><input type="number" id="risk" value="1" oninput="calc()"></div>
+                <div class="input-box"><label>Stop Loss (Pips)</label><input type="number" id="sl" value="10" oninput="calc()"></div>
+                <div style="background:#000; padding:20px; text-align:center; border-radius:10px;">
+                    <span style="color:#94a3b8; font-size:11px;">LOT MT5 CONSEILLÉ</span>
+                    <div id="lot" style="font-size:36px; color:var(--green); font-weight:bold;">0.10</div>
                 </div>
-                <button class="btn-action" onclick="addTrade()">Valider & Enregistrer</button>
             </div>
 
-            <div class="journal-container">
-                <table>
-                    <thead><tr><th>Date</th><th>Instrument</th><th>Sens</th><th>Score</th><th>Résultat</th><th>P/L ($)</th></tr></thead>
-                    <tbody id="journalBody"></tbody>
-                </table>
+            <div class="card" style="flex: 1;">
+                <h3>🛡️ Checklist Malone (80%)</h3>
+                <div id="checklist">
+                    <label class="check-item"><input type="checkbox" class="cb" data-p="20" onchange="calc()"> Structure Fond <span style="color:var(--accent)">20%</span></label>
+                    <label class="check-item"><input type="checkbox" class="cb" data-p="15" onchange="calc()"> Cassure Trend <span style="color:var(--accent)">15%</span></label>
+                    <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="calc()"> Zone SMMA / S-D <span style="color:var(--accent)">10%</span></label>
+                    <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="calc()"> TF Alignés <span style="color:var(--accent)">10%</span></label>
+                    <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="calc()"> Absence de News <span style="color:var(--accent)">10%</span></label>
+                    <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="calc()"> Ratio RR > 2 <span style="color:var(--accent)">10%</span></label>
+                    <label class="check-item"><input type="checkbox" class="cb" data-p="5" onchange="calc()"> Psychologie Prête <span style="color:var(--accent)">5%</span></label>
+                </div>
+                <div id="score" style="font-size:40px; text-align:center; font-weight:bold; margin-top:10px;">0%</div>
             </div>
+        </div>
+        
+        <div class="card">
+            <h3>📝 Enregistrer le Trade</h3>
+            <div class="flex-row">
+                <select id="pair">
+                    <option>NAS100</option><option>US30</option><option>GER40</option><option>SP500</option>
+                    <option>XAUUSD (GOLD)</option><option>XAGUSD (SILVER)</option><option>WTI (OIL)</option>
+                    <option>EURUSD</option><option>GBPUSD</option><option>GBPJPY</option>
+                </select>
+                <select id="res"><option value="tp">✅ GAIN (TP)</option><option value="sl">❌ PERTE (SL)</option><option value="be">🛡️ BREAK-EVEN</option></select>
+                <input type="number" id="pl" placeholder="Résultat en Dollars ($)">
+            </div>
+            <button class="btn-save" onclick="saveTrade()">Enregistrer dans le journal</button>
+        </div>
+    </div>
+
+    <div id="journal" class="page">
+        <div class="card">
+            <h3>📜 Historique des positions</h3>
+            <table>
+                <thead>
+                    <tr><th>DATE</th><th>INSTRUMENT</th><th>SCORE</th><th>RÉSULTAT</th><th>P/L ($)</th></tr>
+                </thead>
+                <tbody id="journalList"></tbody>
+            </table>
+            <button onclick="clearJournal()" style="background:none; border:1px solid #444; color:#666; margin-top:20px; cursor:pointer; padding:5px 10px; border-radius:5px;">Réinitialiser l'historique</button>
         </div>
     </div>
 
     <script>
-        let trades = JSON.parse(localStorage.getItem('malone_final_v5')) || [];
-        
-        function updateLogic() {
-            const cap = parseFloat(document.getElementById('capital').value) || 1000;
+        let trades = JSON.parse(localStorage.getItem('malone_app_v1')) || [];
+
+        function openPage(evt, pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(pageName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+            if(pageName === 'dashboard') renderDashboard();
+        }
+
+        function calc() {
+            const cap = parseFloat(document.getElementById('cap').value) || 1000;
             const risk = parseFloat(document.getElementById('risk').value) || 1;
             const sl = parseFloat(document.getElementById('sl').value) || 10;
-            const lot = (cap * (risk / 100)) / (sl * 10);
-            document.getElementById('lotDisplay').innerText = lot > 0 ? lot.toFixed(2) : "0.00";
+            document.getElementById('lot').innerText = ((cap * (risk / 100)) / (sl * 10)).toFixed(2);
 
-            let scoreFixe = 0;
-            document.querySelectorAll('.cb').forEach(c => { if(c.checked) scoreFixe += parseInt(c.getAttribute('data-p')); });
-
-            let bonus = risk <= 1 ? 20 : (risk <= 2 ? 15 : (risk <= 3 ? 10 : (risk <= 4 ? 5 : 0)));
-            let danger = risk > 4;
-
-            const finalScore = danger ? 0 : (scoreFixe + bonus);
-            const circle = document.getElementById('scoreCircle');
-            circle.innerText = finalScore + "%";
-            circle.style.color = danger ? "#ff4d4d" : "#00ffa3";
-            document.getElementById('riskWarning').innerText = danger ? "STOP : RISQUE TROP HAUT" : "Bonus Risque : +" + bonus + "%";
+            let score = 0;
+            document.querySelectorAll('.cb').forEach(cb => { if(cb.checked) score += parseInt(cb.getAttribute('data-p')); });
+            let bonus = risk <= 1 ? 20 : (risk <= 2 ? 10 : 0);
+            const total = score + bonus;
+            document.getElementById('score').innerText = total + "%";
+            document.getElementById('score').style.color = total >= 80 ? "#00ffa3" : "#00d4ff";
         }
 
-        function addTrade() {
+        function saveTrade() {
+            const plValue = parseFloat(document.getElementById('pl').value) || 0;
             const trade = {
                 date: new Date().toLocaleDateString('fr-FR'),
-                month: new Date().getMonth(),
                 pair: document.getElementById('pair').value,
-                dir: document.getElementById('dir').value,
-                score: document.getElementById('scoreCircle').innerText,
+                score: document.getElementById('score').innerText,
                 res: document.getElementById('res').value,
-                pl: parseFloat(document.getElementById('pl').value) || 0
+                pl: plValue
             };
             trades.push(trade);
-            localStorage.setItem('malone_final_v5', JSON.stringify(trades));
-            render();
+            localStorage.setItem('malone_app_v1', JSON.stringify(trades));
+            alert("Trade enregistré !");
+            renderJournal();
         }
 
-        function render() {
-            const body = document.getElementById('journalBody');
-            body.innerHTML = '';
+        function renderDashboard() {
             let totalPL = 0;
             let wins = 0;
-            let equityData = [1000];
-            let monthlyData = new Array(12).fill(0);
-
+            let dataEquity = [1000];
             trades.forEach(t => {
                 totalPL += t.pl;
                 if(t.res === 'tp') wins++;
-                monthlyData[t.month] += t.pl;
-                equityData.push(1000 + totalPL);
-                body.innerHTML += `<tr><td>${t.date}</td><td>${t.pair}</td><td>${t.dir}</td><td>${t.score}</td><td><span class="badge ${t.res==='tp'?'win':'loss'}">${t.res}</span></td><td>${t.pl}$</td></tr>`;
+                dataEquity.push(1000 + totalPL);
             });
-
-            document.getElementById('stat-total-pl').innerText = totalPL.toFixed(2) + "$";
-            document.getElementById('stat-winrate').innerText = trades.length > 0 ? ((wins/trades.length)*100).toFixed(1) + "%" : "0%";
-            document.getElementById('stat-wins').innerText = wins;
-            document.getElementById('stat-total').innerText = trades.length;
-            updateCharts(equityData, monthlyData);
+            document.getElementById('db-balance').innerText = (1000 + totalPL).toFixed(2) + "$";
+            document.getElementById('db-pl').innerText = totalPL.toFixed(2) + "$";
+            document.getElementById('db-pl').style.color = totalPL >= 0 ? "#00ffa3" : "#ff4d4d";
+            document.getElementById('db-wr').innerText = trades.length ? ((wins / trades.length) * 100).toFixed(1) + "%" : "0%";
+            document.getElementById('db-count').innerText = trades.length;
+            updateChart(dataEquity);
         }
 
-        let chartE, chartM;
-        function updateCharts(equity, monthly) {
-            const ctxE = document.getElementById('chartEquity').getContext('2d');
-            if(chartE) chartE.destroy();
-            chartE = new Chart(ctxE, { type: 'line', data: { labels: equity.map(()=>''), datasets: [{ data: equity, borderColor: '#00ffa3', fill: true, backgroundColor: 'rgba(0,255,163,0.05)', tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
-
-            const ctxM = document.getElementById('chartMonthly').getContext('2d');
-            if(chartM) chartM.destroy();
-            chartM = new Chart(ctxM, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: monthly, backgroundColor: '#00d4ff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+        function renderJournal() {
+            const list = document.getElementById('journalList');
+            list.innerHTML = '';
+            trades.slice().reverse().forEach(t => {
+                list.innerHTML += `<tr>
+                    <td>${t.date}</td><td>${t.pair}</td><td>${t.score}</td>
+                    <td class="${t.res === 'tp' ? 'badge-tp' : 'badge-sl'}">${t.res.toUpperCase()}</td>
+                    <td style="color:${t.pl >= 0 ? 'var(--green)' : 'var(--red)'}">${t.pl.toFixed(2)}$</td>
+                </tr>`;
+            });
         }
-        render(); updateLogic();
+
+        let chart;
+        function updateChart(data) {
+            const ctx = document.getElementById('equityChart').getContext('2d');
+            if(chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(() => ''),
+                    datasets: [{ data: data, borderColor: '#00ffa3', tension: 0.3, fill: true, backgroundColor: 'rgba(0,255,163,0.05)' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function clearJournal() { if(confirm("Supprimer tout l'historique ?")) { trades = []; localStorage.removeItem('malone_app_v1'); renderDashboard(); renderJournal(); } }
+
+        renderDashboard(); renderJournal(); calc();
     </script>
 </body>
 </html>
