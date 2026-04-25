@@ -3,23 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_PRO_MULTI_PAGE</title>
+    <title>MALONE_ULTIMATE_PRO</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #06070a;
-            --panel: #0f111a;
+            --bg: #050608;
+            --card-bg: #0d1117;
             --accent: #00d4ff;
             --green: #00ffa3;
             --red: #ff4d4d;
-            --text: #ffffff;
-            --border: #1f2937;
+            --text-main: #ffffff;
+            --text-dim: #8b949e;
+            --border: #30363d;
         }
 
         body { 
-            font-family: 'Inter', sans-serif; 
+            font-family: 'Rajdhani', sans-serif; 
             background: var(--bg); 
-            color: var(--text); 
+            color: var(--text-main); 
             margin: 0; 
             height: 100vh; 
             display: flex; 
@@ -27,233 +29,258 @@
             overflow: hidden; 
         }
 
-        /* BARRE DE NAVIGATION (TABS) */
+        /* NAVIGATION PRO */
         .nav-bar {
             display: flex;
-            background: var(--panel);
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border);
-            padding: 0 20px;
+            padding: 0 40px;
+            gap: 30px;
         }
         .nav-item {
-            padding: 15px 25px;
+            padding: 20px 0;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            color: #94a3b8;
-            border-bottom: 3px solid transparent;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dim);
+            letter-spacing: 2px;
             transition: 0.3s;
+            position: relative;
             text-transform: uppercase;
         }
-        .nav-item:hover { color: var(--accent); }
-        .nav-item.active {
-            color: var(--accent);
-            border-bottom-color: var(--accent);
-            background: rgba(0, 212, 255, 0.05);
+        .nav-item.active { color: var(--accent); }
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 3px;
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
         }
 
-        /* CONTENU DES PAGES */
-        .page {
-            display: none; /* Caché par défaut */
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
+        .page { display: none; flex: 1; padding: 25px; overflow-y: auto; box-sizing: border-box; }
         .page.active { display: block; }
 
-        /* DESIGN DES PANNEAUX */
-        .grid-dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
-        .stat-card span { font-size: 11px; color: #94a3b8; text-transform: uppercase; }
-        .stat-card b { font-size: 24px; color: var(--accent); display: block; margin-top: 5px; }
+        /* HEADER STATS (Comme image_d37733) */
+        .header-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .h-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            padding: 15px; 
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .h-card span { font-size: 11px; color: var(--text-dim); display: block; margin-bottom: 5px; }
+        .h-card b { font-family: 'Orbitron', sans-serif; font-size: 22px; color: var(--accent); }
 
-        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        h3 { margin-top: 0; font-size: 14px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+        /* BLOCS DESIGN PRO (Comme image_d368ad) */
+        .glass-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            padding: 20px; 
+            height: 100%;
+            box-sizing: border-box;
+        }
+        h3 { 
+            color: var(--accent); 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 14px; 
+            margin-top: 0; 
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-        /* FORMULAIRES */
-        .flex-row { display: flex; gap: 15px; flex-wrap: wrap; }
-        .input-box { flex: 1; min-width: 200px; margin-bottom: 15px; }
-        input, select, textarea { width: 100%; padding: 12px; background: #06070a; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
-        
-        .check-item { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid transparent; }
-        .check-item:hover { border-color: var(--accent); }
+        /* INPUTS & FORM */
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 5px; }
+        input, select { 
+            width: 100%; background: #161b22; border: 1px solid var(--border); 
+            color: white; padding: 12px; border-radius: 6px; font-size: 14px;
+        }
 
-        .btn-save { background: var(--green); color: #000; border: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; width: 100%; font-size: 14px; }
+        /* CHECKLIST PRO (Comme image_d3740e) */
+        .check-row { 
+            display: flex; justify-content: space-between; align-items: center;
+            background: #161b22; padding: 12px; border-radius: 6px; margin-bottom: 8px;
+            border-left: 4px solid #30363d;
+        }
+        .check-row:hover { border-left-color: var(--accent); }
+        .score-display { 
+            font-family: 'Orbitron', sans-serif; font-size: 48px; text-align: center; margin: 20px 0;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
 
-        /* JOURNAL TABLE */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: var(--panel); }
-        th { text-align: left; padding: 15px; background: #1c222d; color: #94a3b8; font-size: 12px; }
-        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .badge-tp { color: var(--green); font-weight: bold; }
-        .badge-sl { color: var(--red); font-weight: bold; }
+        /* BOUTON ENREGISTRER (Comme image_d3684e) */
+        .btn-action {
+            background: var(--green); color: black; border: none; padding: 15px;
+            width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron';
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        .btn-action:hover { box-shadow: 0 0 20px rgba(0, 255, 163, 0.4); transform: translateY(-2px); }
 
-        .chart-container { height: 350px; width: 100%; }
+        /* TABLEAU (Comme image_d3731e) */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 15px; color: var(--text-dim); font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        td { padding: 15px; border-bottom: 1px solid #161b22; font-size: 14px; }
+        .win { color: var(--green); font-weight: bold; }
+        .loss { color: var(--red); font-weight: bold; }
+
+        .dashboard-layout { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .hub-layout { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
     </style>
 </head>
 <body>
 
     <div class="nav-bar">
-        <div class="nav-item active" onclick="openPage(event, 'dashboard')">🏠 Dashboard</div>
+        <div class="nav-item active" onclick="openPage(event, 'dashboard')">📈 Dashboard</div>
         <div class="nav-item" onclick="openPage(event, 'hub')">🛡️ Trading Hub</div>
-        <div class="nav-item" onclick="openPage(event, 'journal')">📜 Journal Historique</div>
+        <div class="nav-item" onclick="openPage(event, 'journal')">📜 Journal</div>
     </div>
 
     <div id="dashboard" class="page active">
-        <div class="grid-dashboard">
-            <div class="stat-card"><span>Balance Totale</span><b id="db-balance">1000.00$</b></div>
-            <div class="stat-card"><span>Profit/Perte Total</span><b id="db-pl">0.00$</b></div>
-            <div class="stat-card"><span>Win Rate</span><b id="db-wr">0%</b></div>
-            <div class="stat-card"><span>Total Trades</span><b id="db-count">0</b></div>
+        <div class="header-grid">
+            <div class="h-card"><span>BALANCE</span><b id="db-bal">1000.00$</b></div>
+            <div class="h-card"><span>PROFIT TOTAL</span><b id="db-pl">0.00$</b></div>
+            <div class="h-card"><span>WIN RATE</span><b id="db-wr">0%</b></div>
+            <div class="h-card"><span>TOTAL TRADES</span><b id="db-tr">0</b></div>
         </div>
-        <div class="card">
-            <h3>📈 Progression de l'Équité</h3>
-            <div class="chart-container">
-                <canvas id="equityChart"></canvas>
-            </div>
+        <div class="glass-card">
+            <h3>📊 PROGRESSION DE L'ÉQUITÉ</h3>
+            <div style="height: 400px;"><canvas id="equityChart"></canvas></div>
         </div>
     </div>
 
     <div id="hub" class="page">
-        <div class="flex-row">
-            <div class="card" style="flex: 1;">
-                <h3>⚙️ Calculateur & Risque</h3>
-                <div class="input-box"><label>Capital ($)</label><input type="number" id="cap" value="1000" oninput="calc()"></div>
-                <div class="input-box"><label>Risque (%)</label><input type="number" id="risk" value="1" oninput="calc()"></div>
-                <div class="input-box"><label>Stop Loss (Pips)</label><input type="number" id="sl" value="10" oninput="calc()"></div>
-                <div style="background:#000; padding:20px; text-align:center; border-radius:10px;">
-                    <span style="color:#94a3b8; font-size:11px;">LOT MT5 CONSEILLÉ</span>
-                    <div id="lot" style="font-size:36px; color:var(--green); font-weight:bold;">0.10</div>
+        <div class="hub-layout">
+            <div class="glass-card">
+                <h3>⚙️ RISQUE & LOTS</h3>
+                <div class="input-group"><label>CAPITAL ($)</label><input type="number" id="cap" value="1000" oninput="calc()"></div>
+                <div class="input-group"><label>RISQUE (%)</label><input type="number" id="risk" value="1" oninput="calc()"></div>
+                <div class="input-group"><label>STOP LOSS (PIPS)</label><input type="number" id="sl" value="10" oninput="calc()"></div>
+                
+                <div style="background: #000; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--accent);">
+                    <span style="color: var(--text-dim); font-size: 11px;">LOTS À EXÉCUTER</span>
+                    <div id="lot-res" style="font-family: 'Orbitron'; font-size: 32px; color: var(--green);">0.10</div>
                 </div>
+
+                <h3 style="margin-top:30px;">🛡️ CHECKLIST MALONE</h3>
+                <div id="checklist">
+                    <div class="check-row">Structure H4/H1 <input type="checkbox" class="cb" data-p="20" onchange="calc()"></div>
+                    <div class="check-row">Cassure Tendance <input type="checkbox" class="cb" data-p="15" onchange="calc()"></div>
+                    <div class="check-row">Zone SMMA/OB <input type="checkbox" class="cb" data-p="15" onchange="calc()"></div>
+                    <div class="check-row">TF Alignés <input type="checkbox" class="cb" data-p="15" onchange="calc()"></div>
+                    <div class="check-row">Ratio RR > 2 <input type="checkbox" class="cb" data-p="15" onchange="calc()"></div>
+                </div>
+                <div id="score" class="score-display">0%</div>
             </div>
 
-            <div class="card" style="flex: 1;">
-                <h3>🛡️ Checklist Malone (80%)</h3>
-                <div id="checklist">
-                    <label class="check-item"><input type="checkbox" class="cb" data-p="20" onchange="calc()"> Structure Fond <span style="color:var(--accent)">20%</span></label>
-                    <label class="check-item"><input type="checkbox" class="cb" data-p="15" onchange="calc()"> Cassure Trend <span style="color:var(--accent)">15%</span></label>
-                    <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="calc()"> Zone SMMA / S-D <span style="color:var(--accent)">10%</span></label>
-                    <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="calc()"> TF Alignés <span style="color:var(--accent)">10%</span></label>
-                    <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="calc()"> Absence de News <span style="color:var(--accent)">10%</span></label>
-                    <label class="check-item"><input type="checkbox" class="cb" data-p="10" onchange="calc()"> Ratio RR > 2 <span style="color:var(--accent)">10%</span></label>
-                    <label class="check-item"><input type="checkbox" class="cb" data-p="5" onchange="calc()"> Psychologie Prête <span style="color:var(--accent)">5%</span></label>
+            <div class="glass-card">
+                <h3>📝 ENREGISTRER LE TRADE</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                    <div class="input-group"><label>ACTIF</label>
+                        <select id="pair">
+                            <option>NAS100</option><option>US30</option><option>GOLD</option><option>EURUSD</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>RÉSULTAT</label>
+                        <select id="res"><option value="tp">✅ GAIN (TP)</option><option value="sl">❌ PERTE (SL)</option></select>
+                    </div>
                 </div>
-                <div id="score" style="font-size:40px; text-align:center; font-weight:bold; margin-top:10px;">0%</div>
+                <div class="input-group"><label>PROFIT/PERTE RÉEL ($)</label><input type="number" id="pl-val" placeholder="Ex: 50 ou -20"></div>
+                <button class="btn-action" onclick="saveTrade()">ENREGISTRER LA POSITION</button>
             </div>
-        </div>
-        
-        <div class="card">
-            <h3>📝 Enregistrer le Trade</h3>
-            <div class="flex-row">
-                <select id="pair">
-                    <option>NAS100</option><option>US30</option><option>GER40</option><option>SP500</option>
-                    <option>XAUUSD (GOLD)</option><option>XAGUSD (SILVER)</option><option>WTI (OIL)</option>
-                    <option>EURUSD</option><option>GBPUSD</option><option>GBPJPY</option>
-                </select>
-                <select id="res"><option value="tp">✅ GAIN (TP)</option><option value="sl">❌ PERTE (SL)</option><option value="be">🛡️ BREAK-EVEN</option></select>
-                <input type="number" id="pl" placeholder="Résultat en Dollars ($)">
-            </div>
-            <button class="btn-save" onclick="saveTrade()">Enregistrer dans le journal</button>
         </div>
     </div>
 
     <div id="journal" class="page">
-        <div class="card">
-            <h3>📜 Historique des positions</h3>
+        <div class="glass-card">
+            <h3>📜 HISTORIQUE DES POSITIONS</h3>
             <table>
                 <thead>
                     <tr><th>DATE</th><th>INSTRUMENT</th><th>SCORE</th><th>RÉSULTAT</th><th>P/L ($)</th></tr>
                 </thead>
                 <tbody id="journalList"></tbody>
             </table>
-            <button onclick="clearJournal()" style="background:none; border:1px solid #444; color:#666; margin-top:20px; cursor:pointer; padding:5px 10px; border-radius:5px;">Réinitialiser l'historique</button>
+            <button onclick="clearAll()" style="margin-top:20px; background:none; border:1px solid #444; color:#666; cursor:pointer; padding:8px;">Effacer l'historique</button>
         </div>
     </div>
 
     <script>
-        let trades = JSON.parse(localStorage.getItem('malone_app_v1')) || [];
+        let db = JSON.parse(localStorage.getItem('malone_pro_v2')) || [];
 
-        function openPage(evt, pageName) {
+        function openPage(evt, name) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(pageName).classList.add('active');
+            document.getElementById(name).classList.add('active');
             evt.currentTarget.classList.add('active');
-            if(pageName === 'dashboard') renderDashboard();
+            if(name === 'dashboard') renderDB();
+            if(name === 'journal') renderJournal();
         }
 
         function calc() {
-            const cap = parseFloat(document.getElementById('cap').value) || 1000;
-            const risk = parseFloat(document.getElementById('risk').value) || 1;
-            const sl = parseFloat(document.getElementById('sl').value) || 10;
-            document.getElementById('lot').innerText = ((cap * (risk / 100)) / (sl * 10)).toFixed(2);
+            const cap = parseFloat(document.getElementById('cap').value) || 0;
+            const risk = parseFloat(document.getElementById('risk').value) || 0;
+            const sl = parseFloat(document.getElementById('sl').value) || 1;
+            document.getElementById('lot-res').innerText = ((cap * (risk/100)) / (sl * 10)).toFixed(2);
 
-            let score = 0;
-            document.querySelectorAll('.cb').forEach(cb => { if(cb.checked) score += parseInt(cb.getAttribute('data-p')); });
-            let bonus = risk <= 1 ? 20 : (risk <= 2 ? 10 : 0);
-            const total = score + bonus;
-            document.getElementById('score').innerText = total + "%";
-            document.getElementById('score').style.color = total >= 80 ? "#00ffa3" : "#00d4ff";
+            let s = 0;
+            document.querySelectorAll('.cb').forEach(c => { if(c.checked) s += parseInt(c.getAttribute('data-p')); });
+            document.getElementById('score').innerText = s + "%";
+            document.getElementById('score').style.color = s >= 80 ? 'var(--green)' : 'var(--accent)';
         }
 
         function saveTrade() {
-            const plValue = parseFloat(document.getElementById('pl').value) || 0;
             const trade = {
                 date: new Date().toLocaleDateString('fr-FR'),
                 pair: document.getElementById('pair').value,
                 score: document.getElementById('score').innerText,
                 res: document.getElementById('res').value,
-                pl: plValue
+                pl: parseFloat(document.getElementById('pl-val').value) || 0
             };
-            trades.push(trade);
-            localStorage.setItem('malone_app_v1', JSON.stringify(trades));
-            alert("Trade enregistré !");
-            renderJournal();
+            db.push(trade);
+            localStorage.setItem('malone_pro_v2', JSON.stringify(db));
+            alert("Trade Archivé !");
         }
 
-        function renderDashboard() {
-            let totalPL = 0;
-            let wins = 0;
-            let dataEquity = [1000];
-            trades.forEach(t => {
-                totalPL += t.pl;
-                if(t.res === 'tp') wins++;
-                dataEquity.push(1000 + totalPL);
-            });
-            document.getElementById('db-balance').innerText = (1000 + totalPL).toFixed(2) + "$";
-            document.getElementById('db-pl').innerText = totalPL.toFixed(2) + "$";
-            document.getElementById('db-pl').style.color = totalPL >= 0 ? "#00ffa3" : "#ff4d4d";
-            document.getElementById('db-wr').innerText = trades.length ? ((wins / trades.length) * 100).toFixed(1) + "%" : "0%";
-            document.getElementById('db-count').innerText = trades.length;
-            updateChart(dataEquity);
+        function renderDB() {
+            let total = 0, wins = 0, eq = [1000];
+            db.forEach(t => { total += t.pl; if(t.res === 'tp') wins++; eq.push(1000 + total); });
+            document.getElementById('db-bal').innerText = (1000 + total).toFixed(2) + "$";
+            document.getElementById('db-pl').innerText = total.toFixed(2) + "$";
+            document.getElementById('db-wr').innerText = db.length ? ((wins/db.length)*100).toFixed(0) + "%" : "0%";
+            document.getElementById('db-tr').innerText = db.length;
+            draw(eq);
         }
 
         function renderJournal() {
             const list = document.getElementById('journalList');
             list.innerHTML = '';
-            trades.slice().reverse().forEach(t => {
+            db.slice().reverse().forEach(t => {
                 list.innerHTML += `<tr>
                     <td>${t.date}</td><td>${t.pair}</td><td>${t.score}</td>
-                    <td class="${t.res === 'tp' ? 'badge-tp' : 'badge-sl'}">${t.res.toUpperCase()}</td>
-                    <td style="color:${t.pl >= 0 ? 'var(--green)' : 'var(--red)'}">${t.pl.toFixed(2)}$</td>
+                    <td class="${t.res === 'tp' ? 'win' : 'loss'}">${t.res.toUpperCase()}</td>
+                    <td style="color:${t.pl >= 0 ? 'var(--green)' : 'var(--red)'}">${t.pl}$</td>
                 </tr>`;
             });
         }
 
         let chart;
-        function updateChart(data) {
+        function draw(data) {
             const ctx = document.getElementById('equityChart').getContext('2d');
             if(chart) chart.destroy();
             chart = new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: data.map(() => ''),
-                    datasets: [{ data: data, borderColor: '#00ffa3', tension: 0.3, fill: true, backgroundColor: 'rgba(0,255,163,0.05)' }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: { labels: data.map(()=>''), datasets: [{ data: data, borderColor: '#00ffa3', backgroundColor: 'rgba(0, 255, 163, 0.1)', fill: true, tension: 0.4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#161b22' } } } }
             });
         }
 
-        function clearJournal() { if(confirm("Supprimer tout l'historique ?")) { trades = []; localStorage.removeItem('malone_app_v1'); renderDashboard(); renderJournal(); } }
-
-        renderDashboard(); renderJournal(); calc();
+        function clearAll() { if(confirm("Réinitialiser ?")) { db = []; localStorage.removeItem('malone_pro_v2'); renderDB(); renderJournal(); } }
+        renderDB(); calc();
     </script>
 </body>
 </html>
