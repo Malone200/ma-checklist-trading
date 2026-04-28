@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_TRADING_V20</title>
+    <title>MALONE_TRADING_V22</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -140,6 +140,7 @@
             }
         }
 
+        // REDIMENSIONNEUR INTELLIGENT D'IMAGE
         function handleImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -149,11 +150,16 @@
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
-                        const maxW = 400;
+                        
+                        // ON RÉDUIT LA TAILLE ICI
+                        const maxW = 400; // Largeur max autorisée : 400 pixels
                         const scale = maxW / img.width;
-                        canvas.width = maxW; canvas.height = img.height * scale;
+                        canvas.width = maxW;
+                        canvas.height = img.height * scale;
+                        
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        compressedImg = canvas.toDataURL('image/jpeg', 0.7);
+                        compressedImg = canvas.toDataURL('image/jpeg', 0.7); // Compression Qualité 70%
+                        
                         document.getElementById('preview-box').src = compressedImg;
                         document.getElementById('preview-box').style.display = "block";
                     }
@@ -184,7 +190,7 @@
         }
 
         function openTrade() {
-            if(currentCap <= 0) return alert("Saisis ton capital actuel !");
+            if(currentCap <= 0) return alert("Saisis ton capital actuel d'abord !");
             active.push({ id: Date.now(), date: new Date().toISOString(), pair: document.getElementById('pair').value, score: document.getElementById('score-display').innerText, note: document.getElementById('trade-note').value, img: compressedImg });
             localStorage.setItem('m_a', JSON.stringify(active));
             document.getElementById('trade-note').value = ""; compressedImg = "";
@@ -209,13 +215,13 @@
 
         function updateUI() {
             const act = document.getElementById('activeList');
-            act.innerHTML = active.length ? '' : '<p style="color:var(--text-dim); font-size:12px;">Aucun trade actif.</p>';
-            active.forEach(t => { act.innerHTML += `<div style="background:#1c2128; border:1px solid var(--accent); padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span>${t.pair}</span><button onclick="confirmClose(${t.id})" style="background:var(--red); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">ENCAISSER</button></div>`; });
+            act.innerHTML = active.length ? '' : '<p style="color:var(--text-dim); font-size:12px;">Aucun trade en cours.</p>';
+            active.forEach(t => { act.innerHTML += `<div style="background:#1c2128; border:1px solid var(--accent); padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span>${t.pair}</span><button onclick="confirmClose(${t.id})" style="background:var(--red); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">FERMER</button></div>`; });
 
             const jb = document.getElementById('journalBody');
             if(jb) { jb.innerHTML = ''; trades.slice().reverse().forEach(t => { 
                 const imgTag = t.img ? `<img src="${t.img}" class="journal-img" onclick="window.open(this.src)">` : '-';
-                jb.innerHTML += `<tr><td>${new Date(t.date).toLocaleDateString()}</td><td>${t.pair}</td><td>${imgTag}</td><td>${t.note || '-'}</td><td>${t.score}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`; 
+                jb.innerHTML += `<tr><td>${new Date(t.date).toLocaleDateString()}</td><td>${t.pair}</td><td>${imgTag}</td><td style="max-width:100px; overflow:hidden; text-overflow:ellipsis;">${t.note || '-'}</td><td>${t.score}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`; 
             }); }
 
             let totalPl = 0, wins = 0;
