@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_TRADING_V12_CLEAN</title>
+    <title>MALONE_TRADING_SYSTEM_V14</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -30,7 +30,6 @@
         .btn-action { background: var(--green); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; margin-top: 15px; }
         .active-trade-card { background: #1c2128; border: 1px solid var(--accent); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .btn-close { background: var(--red); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-size: 10px; }
-        .btn-reset { background: transparent; border: 1px solid var(--red); color: var(--red); padding: 10px; cursor: pointer; border-radius: 6px; font-size: 11px; margin-top: 30px; }
     </style>
 </head>
 <body>
@@ -48,10 +47,27 @@
             <div class="glass-card" style="text-align:center;"><span>WIN RATE</span><br><b id="db-wr" style="font-size:24px;">0%</b></div>
             <div class="glass-card" style="text-align:center;"><span>TRADES</span><br><b id="db-tr" style="font-size:24px;">0</b></div>
         </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom:20px;">
+            <div class="glass-card" style="text-align:center; border-bottom: 2px solid var(--accent);">
+                <span style="font-size: 10px; color: var(--text-dim);">RÉSULTAT JOUR</span><br>
+                <b id="stat-day" style="font-size:20px;">0.00$</b>
+            </div>
+            <div class="glass-card" style="text-align:center; border-bottom: 2px solid var(--accent);">
+                <span style="font-size: 10px; color: var(--text-dim);">RÉSULTAT MOIS</span><br>
+                <b id="stat-month" style="font-size:20px;">0.00$</b>
+            </div>
+            <div class="glass-card" style="text-align:center; border-bottom: 2px solid var(--accent);">
+                <span style="font-size: 10px; color: var(--text-dim);">RÉSULTAT ANNÉE</span><br>
+                <b id="stat-year" style="font-size:20px;">0.00$</b>
+            </div>
+        </div>
         
         <div class="glass-card">
             <h3>⚡ POSITIONS EN COURS</h3>
-            <div id="activeList"></div>
+            <div id="activeList">
+                <p style="color:var(--text-dim); font-size:13px;">Aucun trade actif.</p>
+            </div>
         </div>
 
         <div class="glass-card">
@@ -96,13 +112,13 @@
                 </div>
                 <label>ACTIF</label>
                 <select id="pair">
-                    <optgroup label="INDICES"><option>NAS100</option><option>US30</option><option>SP500</option></optgroup>
+                    <optgroup label="INDICES"><option>NAS100</option><option>US30</option><option>SP500</option><option>GERMANY 40</option></optgroup>
                     <optgroup label="FOREX">
                         <option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>AUD/USD</option>
                         <option>USD/CHF</option><option>USD/CAD</option><option>NZD/USD</option><option>GBP/JPY</option>
                         <option>EUR/JPY</option><option>GBP/CAD</option>
                     </optgroup>
-                    <optgroup label="METALS"><option>XAUUSD</option><option>XAGUSD</option></optgroup>
+                    <optgroup label="METALS & OIL"><option>XAUUSD</option><option>SILVER</option><option>OIL</option></optgroup>
                 </select>
                 <button class="btn-action" onclick="openTrade()">LANCER LA POSITION</button>
             </div>
@@ -111,14 +127,14 @@
 
     <div id="journal" class="page">
         <div class="glass-card">
-            <h3>📜 JOURNAL HISTORIQUE</h3>
+            <h3>📜 JOURNAL DES TRADES</h3>
             <table style="width:100%; border-collapse:collapse; font-size:14px;">
                 <thead style="text-align:left; color:var(--text-dim); border-bottom:1px solid var(--border);">
                     <tr><th style="padding:12px;">DATE</th><th>ACTIF</th><th>SCORE</th><th>STATUT</th><th>P/L ($)</th></tr>
                 </thead>
                 <tbody id="journalBody"></tbody>
             </table>
-            <button class="btn-reset" onclick="resetAll()">⚠️ RÉINITIALISER TOUTES LES DONNÉES</button>
+            <button style="background:transparent; border:1px solid var(--red); color:var(--red); padding:10px; cursor:pointer; border-radius:5px; margin-top:20px;" onclick="resetAll()">⚠️ RÉINITIALISER TOUT</button>
         </div>
     </div>
 
@@ -130,7 +146,7 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            e.currentTarget.classList.add('active');
+            if(e) e.currentTarget.classList.add('active');
             updateUI();
         }
 
@@ -151,10 +167,9 @@
         function openTrade() {
             const cap = parseFloat(document.getElementById('cap').value);
             if(!cap) return alert("Saisis ton capital !");
-            active.push({ id: Date.now(), date: new Date().toLocaleDateString(), pair: document.getElementById('pair').value, score: document.getElementById('score-display').innerText, lot: document.getElementById('lot-res').innerText, cap: cap });
+            active.push({ id: Date.now(), date: new Date().toISOString(), pair: document.getElementById('pair').value, score: document.getElementById('score-display').innerText, lot: document.getElementById('lot-res').innerText, cap: cap });
             localStorage.setItem('malone_active', JSON.stringify(active));
-            updateUI();
-            openPage({currentTarget: document.querySelectorAll('.nav-item')[0]}, 'dashboard');
+            openPage(null, 'dashboard');
         }
 
         function confirmClose(id) {
@@ -168,29 +183,48 @@
             updateUI();
         }
 
-        function resetAll() {
-            if(confirm("Veux-tu vraiment effacer TOUT l'historique et les graphiques ?")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
+        function resetAll() { if(confirm("Effacer tout ?")) { localStorage.clear(); location.reload(); } }
 
         function updateUI() {
             const container = document.getElementById('activeList');
             container.innerHTML = active.length ? '' : '<p style="color:var(--text-dim); font-size:13px;">Aucun trade actif.</p>';
             active.forEach(t => { container.innerHTML += `<div class="active-trade-card"><div><b>${t.pair}</b> | Lot: ${t.lot} | Score: ${t.score}</div><button class="btn-close" onclick="confirmClose(${t.id})">CLÔTURER</button></div>`; });
+
             const body = document.getElementById('journalBody');
-            if(body) { body.innerHTML = ''; trades.slice().reverse().forEach(t => { body.innerHTML += `<tr style="border-bottom:1px solid #161b22;"><td style="padding:12px;">${t.date}</td><td>${t.pair}</td><td>${t.score}</td><td>${t.res}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`; }); }
+            if(body) { body.innerHTML = ''; trades.slice().reverse().forEach(t => { body.innerHTML += `<tr style="border-bottom:1px solid #161b22;"><td style="padding:12px;">${new Date(t.date).toLocaleDateString()}</td><td>${t.pair}</td><td>${t.score}</td><td>${t.res}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`; }); }
+
             let total = 0, wins = 0, start = trades.length ? trades[0].cap : 0;
+            let dPl = 0, mPl = 0, yPl = 0;
+            const now = new Date();
             let hist = [start];
-            trades.forEach(t => { total += t.pl; if(t.res === 'TP') wins++; hist.push(start + total); });
-            if(document.getElementById('db-bal')) {
-                document.getElementById('db-bal').innerText = (start + total).toFixed(2) + "$";
-                document.getElementById('db-pl').innerText = total.toFixed(2) + "$";
-                document.getElementById('db-wr').innerText = trades.length ? ((wins/trades.length)*100).toFixed(0) + "%" : "0%";
-                document.getElementById('db-tr').innerText = trades.length;
-                drawChart(hist);
-            }
+
+            trades.forEach(t => {
+                const td = new Date(t.date);
+                total += t.pl;
+                if(t.res === 'TP') wins++;
+                hist.push(start + total);
+                
+                if(td.toDateString() === now.toDateString()) dPl += t.pl;
+                if(td.getMonth() === now.getMonth() && td.getFullYear() === now.getFullYear()) mPl += t.pl;
+                if(td.getFullYear() === now.getFullYear()) yPl += t.pl;
+            });
+
+            document.getElementById('db-bal').innerText = (start + total).toFixed(2) + "$";
+            document.getElementById('db-pl').innerText = total.toFixed(2) + "$";
+            document.getElementById('db-wr').innerText = trades.length ? ((wins/trades.length)*100).toFixed(0) + "%" : "0%";
+            document.getElementById('db-tr').innerText = trades.length;
+            
+            // MAJ DES COMPTEURS PÉRIODIQUES
+            const setStat = (id, val) => {
+                const el = document.getElementById(id);
+                el.innerText = val.toFixed(2) + "$";
+                el.style.color = val >= 0 ? 'var(--green)' : 'var(--red)';
+            };
+            setStat('stat-day', dPl);
+            setStat('stat-month', mPl);
+            setStat('stat-year', yPl);
+
+            drawChart(hist);
         }
 
         let chart;
