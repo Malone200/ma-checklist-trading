@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_TRADING_V14</title>
+    <title>MALONE_TRADING_V16</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -25,7 +25,7 @@
         .input-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         input, select { width: 100%; background: #161b22; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; font-size: 13px; outline: none; }
         .btn-action { background: var(--green); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; margin-top: 10px; }
-        .stat-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 5px; display: block; }
+        .stat-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; display: block; margin-bottom: 5px; }
         .stat-val-small { font-size: 18px; font-family: 'Orbitron'; }
     </style>
 </head>
@@ -46,23 +46,14 @@
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
-            <div class="glass-card" style="text-align:center; border-top: 2px solid var(--accent);">
-                <span class="stat-label">RÉSULTAT JOUR</span>
-                <b id="stat-day" class="stat-val-small">0.00$</b>
-            </div>
-            <div class="glass-card" style="text-align:center; border-top: 2px solid var(--accent);">
-                <span class="stat-label">RÉSULTAT MOIS</span>
-                <b id="stat-month" class="stat-val-small">0.00$</b>
-            </div>
-            <div class="glass-card" style="text-align:center; border-top: 2px solid var(--accent);">
-                <span class="stat-label">RÉSULTAT ANNÉE</span>
-                <b id="stat-year" class="stat-val-small">0.00$</b>
-            </div>
+            <div class="glass-card" style="text-align:center; border-top: 2px solid var(--accent);"><span class="stat-label">RÉSULTAT JOUR</span><b id="stat-day" class="stat-val-small">0.00$</b></div>
+            <div class="glass-card" style="text-align:center; border-top: 2px solid var(--accent);"><span class="stat-label">RÉSULTAT MOIS</span><b id="stat-month" class="stat-val-small">0.00$</b></div>
+            <div class="glass-card" style="text-align:center; border-top: 2px solid var(--accent);"><span class="stat-label">RÉSULTAT ANNÉE</span><b id="stat-year" class="stat-val-small">0.00$</b></div>
         </div>
 
         <div class="glass-card">
             <h3>⚡ POSITIONS EN COURS</h3>
-            <div id="activeList"><p style="color:var(--text-dim); font-size:12px;">Aucun trade actif.</p></div>
+            <div id="activeList"></div>
         </div>
 
         <div class="glass-card">
@@ -74,7 +65,7 @@
     <div id="hub" class="page">
         <div class="layout-hub">
             <div class="glass-card">
-                <h3>🛡️ CHECKLIST (80%)</h3>
+                <h3>🛡️ CHECKLIST MALONE</h3>
                 <div class="check-grid">
                     <div class="check-row">Structure D1/H4/H1 <span>20%</span> <input type="checkbox" class="cb" data-p="20" onchange="calc()"></div>
                     <div class="check-row">Cassure Tendance <span>15%</span> <input type="checkbox" class="cb" data-p="15" onchange="calc()"></div>
@@ -85,10 +76,11 @@
                     <div class="check-row">Double Break <span>5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
                     <div class="check-row">Pullback <span>5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
                     <div class="check-row">Psychologie <span>5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row" style="color:var(--accent);">BONUS RISQUE <span id="risk-bonus-display">0%</span></div>
+                    <div class="check-row" style="color:var(--accent);">RISQUE <span id="risk-bonus-display">0%</span></div>
                 </div>
                 <div class="score-box" style="margin-top:15px;"><b class="score-val" id="score-display">0%</b></div>
             </div>
+
             <div class="glass-card">
                 <h3>⚙️ EXÉCUTION</h3>
                 <div class="input-group">
@@ -98,27 +90,41 @@
                 </div>
                 <div style="background:#000; padding:15px; border-radius:8px; text-align:center; border:1px solid var(--green); margin: 15px 0;">
                     <div id="lot-res" style="font-family:'Orbitron'; font-size:28px; color:var(--green);">0.00</div>
-                    <span style="font-size:9px; color:var(--text-dim);">LOT CALCULÉ</span>
+                    <span style="font-size:9px; color:var(--text-dim);">LOT MT5 CALCULÉ</span>
                 </div>
                 <label>ACTIF</label>
                 <select id="pair">
-                    <option>NAS100</option><option>US30</option><option>GER40</option><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option>
+                    <optgroup label="FOREX">
+                        <option>EUR/USD</option><option>GBP/AUD</option><option>GBP/JPY</option><option>GBP/USD</option>
+                        <option>GBP/CAD</option><option>USD/CAD</option><option>USD/JPY</option><option>USD/CHF</option>
+                        <option>EUR/CHF</option><option>EUR/GBP</option><option>EUR/JPY</option><option>EUR/NZD</option>
+                        <option>AUD/CHF</option><option>NZD/USD</option><option>AUD/USD</option><option>EUR/CAD</option>
+                        <option>AUD/NZD</option>
+                    </optgroup>
+                    <optgroup label="INDICES">
+                        <option>NAS 100</option><option>SP 500</option><option>GER (DAX)</option><option>CAC 40</option>
+                    </optgroup>
+                    <optgroup label="CRYPTO">
+                        <option>BTC/USD</option><option>SOL/USD</option><option>ETH/USD</option>
+                    </optgroup>
+                    <optgroup label="MATIÈRES PREMIÈRES">
+                        <option>XAU/USD (GOLD)</option><option>WTI (OIL)</option><option>XAG/USD (SILVER)</option>
+                    </optgroup>
                 </select>
-                <button class="btn-action" onclick="openTrade()">OUVRIR POSITION</button>
+                <button class="btn-action" onclick="openTrade()">OUVRIR LA POSITION</button>
             </div>
         </div>
     </div>
 
     <div id="journal" class="page">
         <div class="glass-card">
-            <h3>📜 HISTORIQUE</h3>
+            <h3>📜 JOURNAL</h3>
             <table style="width:100%; text-align:left; font-size:13px;">
                 <tr style="color:var(--text-dim); border-bottom:1px solid var(--border);">
-                    <th style="padding:10px;">DATE</th><th>ACTIF</th><th>SCORE</th><th>P/L</th>
+                    <th style="padding:10px;">DATE</th><th>ACTIF</th><th>SCORE</th><th>RÉSULTAT</th>
                 </tr>
                 <tbody id="journalBody"></tbody>
             </table>
-            <button onclick="resetAll()" style="color:var(--red); background:none; border:1px solid var(--red); padding:8px; cursor:pointer; margin-top:20px; border-radius:4px;">RÉINITIALISER TOUT</button>
         </div>
     </div>
 
@@ -156,7 +162,7 @@
         }
 
         function confirmClose(id) {
-            const pl = prompt("P/L ($) ?");
+            const pl = prompt("Gain/Perte en $ ?");
             if (pl === null) return;
             const idx = active.findIndex(x => x.id === id);
             const t = active.splice(idx, 1)[0];
@@ -194,7 +200,6 @@
             document.getElementById('db-wr').innerText = trades.length ? ((wins/trades.length)*100).toFixed(0) + "%" : "0%";
             document.getElementById('db-tr').innerText = trades.length;
             
-            // MAJ JOUR/MOIS/AN
             const updateStat = (id, v) => {
                 const el = document.getElementById(id);
                 el.innerText = v.toFixed(2) + "$";
@@ -203,7 +208,6 @@
             updateStat('stat-day', dPl);
             updateStat('stat-month', mPl);
             updateStat('stat-year', yPl);
-            
             drawChart(hist);
         }
 
@@ -213,7 +217,6 @@
             if(chart) chart.destroy();
             chart = new Chart(ctx, { type: 'line', data: { labels: data.map(()=>''), datasets: [{ data: data, borderColor: '#00ffa3', tension: 0.2, fill: true, backgroundColor: 'rgba(0,255,163,0.05)' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
         }
-        function resetAll() { if(confirm("Tout effacer ?")) { localStorage.clear(); location.reload(); } }
         updateUI(); calc();
     </script>
 </body>
