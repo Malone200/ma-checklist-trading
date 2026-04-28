@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_TRADING_V16</title>
+    <title>MALONE_TRADING_V17</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -22,11 +22,14 @@
         .check-row { display: flex; justify-content: space-between; align-items: center; background: #161b22; padding: 10px; border-radius: 6px; font-size: 12px; border-left: 2px solid #30363d; }
         .score-box { text-align: center; padding: 20px; border-radius: 10px; border: 2px solid var(--border); background: rgba(0,0,0,0.3); }
         .score-val { font-family: 'Orbitron'; font-size: 50px; display: block; }
-        .input-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        input, select { width: 100%; background: #161b22; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; font-size: 13px; outline: none; }
+        .input-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+        input, select, textarea { width: 100%; background: #161b22; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; font-size: 13px; outline: none; font-family: 'Rajdhani'; }
+        textarea { resize: none; height: 60px; }
         .btn-action { background: var(--green); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; margin-top: 10px; }
         .stat-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; display: block; margin-bottom: 5px; }
         .stat-val-small { font-size: 18px; font-family: 'Orbitron'; }
+        .img-preview { width: 100%; height: 100px; object-fit: cover; border-radius: 6px; margin-top: 10px; border: 1px dashed var(--border); display: none; }
+        .journal-img { width: 50px; height: 30px; object-fit: cover; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -82,24 +85,33 @@
             </div>
 
             <div class="glass-card">
-                <h3>⚙️ EXÉCUTION</h3>
+                <h3>⚙️ EXÉCUTION & NOTES</h3>
                 <div class="input-group">
-                    <div><label>CAPITAL ($)</label><input type="number" id="cap" oninput="calc()"></div>
-                    <div><label>RISQUE %</label><input type="number" id="risk" oninput="calc()"></div>
-                    <div><label>SL PIPS</label><input type="number" id="sl" oninput="calc()"></div>
+                    <div><label class="stat-label">CAPITAL ($)</label><input type="number" id="cap" oninput="calc()"></div>
+                    <div><label class="stat-label">RISQUE %</label><input type="number" id="risk" oninput="calc()"></div>
+                    <div><label class="stat-label">SL PIPS</label><input type="number" id="sl" oninput="calc()"></div>
                 </div>
-                <div style="background:#000; padding:15px; border-radius:8px; text-align:center; border:1px solid var(--green); margin: 15px 0;">
+                
+                <div style="margin-bottom:15px;">
+                    <label class="stat-label">POURQUOI CE TRADE ? (NOTES)</label>
+                    <textarea id="trade-note" placeholder="Ex: Rejet zone Supply H4 + Divergence RSI..."></textarea>
+                </div>
+
+                <div style="margin-bottom:15px;">
+                    <label class="stat-label">CAPTURE D'ÉCRAN (IMAGE)</label>
+                    <input type="file" id="trade-file" accept="image/*" onchange="previewImage(this)">
+                    <img id="preview-box" class="img-preview">
+                </div>
+
+                <div style="background:#000; padding:15px; border-radius:8px; text-align:center; border:1px solid var(--green); margin-bottom:15px;">
                     <div id="lot-res" style="font-family:'Orbitron'; font-size:28px; color:var(--green);">0.00</div>
-                    <span style="font-size:9px; color:var(--text-dim);">LOT MT5 CALCULÉ</span>
+                    <span style="font-size:9px; color:var(--text-dim);">LOT CALCULÉ</span>
                 </div>
-                <label>ACTIF</label>
+
+                <label class="stat-label">ACTIF</label>
                 <select id="pair">
                     <optgroup label="FOREX">
-                        <option>EUR/USD</option><option>GBP/AUD</option><option>GBP/JPY</option><option>GBP/USD</option>
-                        <option>GBP/CAD</option><option>USD/CAD</option><option>USD/JPY</option><option>USD/CHF</option>
-                        <option>EUR/CHF</option><option>EUR/GBP</option><option>EUR/JPY</option><option>EUR/NZD</option>
-                        <option>AUD/CHF</option><option>NZD/USD</option><option>AUD/USD</option><option>EUR/CAD</option>
-                        <option>AUD/NZD</option>
+                        <option>EUR/USD</option><option>GBP/AUD</option><option>GBP/JPY</option><option>GBP/USD</option><option>GBP/CAD</option><option>USD/CAD</option><option>USD/JPY</option><option>USD/CHF</option><option>EUR/CHF</option><option>EUR/GBP</option><option>EUR/JPY</option><option>EUR/NZD</option><option>AUD/CHF</option><option>NZD/USD</option><option>AUD/USD</option><option>EUR/CAD</option><option>AUD/NZD</option>
                     </optgroup>
                     <optgroup label="INDICES">
                         <option>NAS 100</option><option>SP 500</option><option>GER (DAX)</option><option>CAC 40</option>
@@ -108,7 +120,7 @@
                         <option>BTC/USD</option><option>SOL/USD</option><option>ETH/USD</option>
                     </optgroup>
                     <optgroup label="MATIÈRES PREMIÈRES">
-                        <option>XAU/USD (GOLD)</option><option>WTI (OIL)</option><option>XAG/USD (SILVER)</option>
+                        <option>XAU/USD</option><option>WTI</option><option>XAG/USD</option>
                     </optgroup>
                 </select>
                 <button class="btn-action" onclick="openTrade()">OUVRIR LA POSITION</button>
@@ -118,10 +130,15 @@
 
     <div id="journal" class="page">
         <div class="glass-card">
-            <h3>📜 JOURNAL</h3>
-            <table style="width:100%; text-align:left; font-size:13px;">
+            <h3>📜 JOURNAL DÉTAILLÉ</h3>
+            <table style="width:100%; text-align:left; font-size:13px; border-collapse: collapse;">
                 <tr style="color:var(--text-dim); border-bottom:1px solid var(--border);">
-                    <th style="padding:10px;">DATE</th><th>ACTIF</th><th>SCORE</th><th>RÉSULTAT</th>
+                    <th style="padding:10px;">DATE</th>
+                    <th>ACTIF</th>
+                    <th>IMG</th>
+                    <th>NOTES</th>
+                    <th>SCORE</th>
+                    <th>P/L</th>
                 </tr>
                 <tbody id="journalBody"></tbody>
             </table>
@@ -131,6 +148,20 @@
     <script>
         let trades = JSON.parse(localStorage.getItem('m_h')) || [];
         let active = JSON.parse(localStorage.getItem('m_a')) || [];
+        let currentImgBase64 = "";
+
+        function previewImage(input) {
+            const preview = document.getElementById('preview-box');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                    currentImgBase64 = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
         function openPage(e, id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -156,8 +187,25 @@
         function openTrade() {
             const cap = parseFloat(document.getElementById('cap').value);
             if(!cap) return alert("Capital requis !");
-            active.push({ id: Date.now(), date: new Date().toISOString(), pair: document.getElementById('pair').value, score: document.getElementById('score-display').innerText, cap: cap });
+            
+            active.push({ 
+                id: Date.now(), 
+                date: new Date().toISOString(), 
+                pair: document.getElementById('pair').value, 
+                score: document.getElementById('score-display').innerText, 
+                cap: cap,
+                note: document.getElementById('trade-note').value,
+                img: currentImgBase64 
+            });
+            
             localStorage.setItem('m_a', JSON.stringify(active));
+            
+            // Reset form
+            document.getElementById('trade-note').value = "";
+            document.getElementById('trade-file').value = "";
+            document.getElementById('preview-box').style.display = "none";
+            currentImgBase64 = "";
+            
             openPage(null, 'dashboard');
         }
 
@@ -178,7 +226,20 @@
             active.forEach(t => { act.innerHTML += `<div style="background:#1c2128; border:1px solid var(--accent); padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span>${t.pair} (${t.score})</span><button onclick="confirmClose(${t.id})" style="background:var(--red); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">CLÔTURER</button></div>`; });
 
             const jb = document.getElementById('journalBody');
-            if(jb) { jb.innerHTML = ''; trades.slice().reverse().forEach(t => { jb.innerHTML += `<tr style="border-bottom:1px solid #161b22;"><td style="padding:10px;">${new Date(t.date).toLocaleDateString()}</td><td>${t.pair}</td><td>${t.score}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`; }); }
+            if(jb) { 
+                jb.innerHTML = ''; 
+                trades.slice().reverse().forEach(t => { 
+                    const imgHtml = t.img ? `<img src="${t.img}" class="journal-img" onclick="window.open(this.src)">` : '-';
+                    jb.innerHTML += `<tr style="border-bottom:1px solid #161b22;">
+                        <td style="padding:10px;">${new Date(t.date).toLocaleDateString()}</td>
+                        <td>${t.pair}</td>
+                        <td>${imgHtml}</td>
+                        <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${t.note}">${t.note || '-'}</td>
+                        <td>${t.score}</td>
+                        <td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td>
+                    </tr>`; 
+                }); 
+            }
 
             let totPl = 0, wins = 0, start = trades.length ? trades[0].cap : 0;
             let dPl = 0, mPl = 0, yPl = 0;
@@ -196,19 +257,21 @@
             });
 
             document.getElementById('db-bal').innerText = (start + totPl).toFixed(2) + "$";
-            document.getElementById('db-pl').innerText = totPl.toFixed(2) + "$";
+            document.getElementById('db-pl').innerText = totalStat(totPl);
             document.getElementById('db-wr').innerText = trades.length ? ((wins/trades.length)*100).toFixed(0) + "%" : "0%";
             document.getElementById('db-tr').innerText = trades.length;
             
-            const updateStat = (id, v) => {
-                const el = document.getElementById(id);
-                el.innerText = v.toFixed(2) + "$";
-                el.style.color = v >= 0 ? 'var(--green)' : 'var(--red)';
-            };
             updateStat('stat-day', dPl);
             updateStat('stat-month', mPl);
             updateStat('stat-year', yPl);
             drawChart(hist);
+        }
+
+        function totalStat(v) { return v.toFixed(2) + "$"; }
+        function updateStat(id, v) {
+            const el = document.getElementById(id);
+            el.innerText = v.toFixed(2) + "$";
+            el.style.color = v >= 0 ? 'var(--green)' : 'var(--red)';
         }
 
         let chart;
