@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_TRADING_V19</title>
+    <title>MALONE_TRADING_V20</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -26,6 +26,7 @@
         input, select, textarea { width: 100%; background: #161b22; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; font-size: 13px; outline: none; font-family: 'Rajdhani'; }
         textarea { resize: none; height: 50px; }
         .btn-action { background: var(--green); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; margin-top: 10px; }
+        .btn-reset { background: transparent; color: var(--red); border: 1px solid var(--red); padding: 10px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 20px; font-family: 'Orbitron'; font-size: 10px; }
         .stat-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; display: block; margin-bottom: 5px; }
         .stat-val-small { font-size: 18px; font-family: 'Orbitron'; }
         .img-preview { width: 100%; height: 100px; object-fit: contain; border-radius: 6px; margin-top: 10px; border: 1px dashed var(--accent); display: none; background: #000; }
@@ -98,15 +99,9 @@
                     <span style="font-size:8px; color:var(--text-dim);">LOT CALCULÉ</span>
                 </div>
                 <select id="pair">
-                    <optgroup label="FOREX">
-                        <option>EUR/USD</option><option>GBP/AUD</option><option>GBP/JPY</option><option>GBP/USD</option><option>GBP/CAD</option><option>USD/CAD</option><option>USD/JPY</option><option>USD/CHF</option><option>EUR/CHF</option><option>EUR/GBP</option><option>EUR/JPY</option><option>EUR/NZD</option><option>AUD/CHF</option><option>NZD/USD</option><option>AUD/USD</option><option>EUR/CAD</option><option>AUD/NZD</option>
-                    </optgroup>
-                    <optgroup label="INDICES">
-                        <option>NAS 100</option><option>SP 500</option><option>GER (DAX)</option><option>CAC 40</option>
-                    </optgroup>
-                    <optgroup label="AUTRES">
-                        <option>BTC/USD</option><option>SOL/USD</option><option>ETH/USD</option><option>XAU/USD</option><option>WTI</option><option>XAG/USD</option>
-                    </optgroup>
+                    <optgroup label="FOREX"><option>EUR/USD</option><option>GBP/AUD</option><option>GBP/JPY</option><option>GBP/USD</option><option>GBP/CAD</option><option>USD/CAD</option><option>USD/JPY</option><option>USD/CHF</option><option>EUR/CHF</option><option>EUR/GBP</option><option>EUR/JPY</option><option>EUR/NZD</option><option>AUD/CHF</option><option>NZD/USD</option><option>AUD/USD</option><option>EUR/CAD</option><option>AUD/NZD</option></optgroup>
+                    <optgroup label="INDICES"><option>NAS 100</option><option>SP 500</option><option>GER (DAX)</option><option>CAC 40</option></optgroup>
+                    <optgroup label="AUTRES"><option>BTC/USD</option><option>SOL/USD</option><option>ETH/USD</option><option>XAU/USD</option><option>WTI</option><option>XAG/USD</option></optgroup>
                 </select>
                 <button class="btn-action" onclick="openTrade()">LANCER LE TRADE</button>
             </div>
@@ -120,6 +115,7 @@
                 <thead><tr><th>DATE</th><th>ACTIF</th><th>IMG</th><th>NOTE</th><th>SCORE</th><th>P/L</th></tr></thead>
                 <tbody id="journalBody"></tbody>
             </table>
+            <button class="btn-reset" onclick="fullReset()">⚠️ RÉINITIALISER TOUTES LES DONNÉES</button>
         </div>
     </div>
 
@@ -129,13 +125,19 @@
         let currentCap = parseFloat(localStorage.getItem('m_cap')) || 0;
         let compressedImg = "";
 
-        // Initialiser l'input Capital
         document.getElementById('global-cap').value = currentCap;
 
         function saveGlobalCap() {
             currentCap = parseFloat(document.getElementById('global-cap').value) || 0;
             localStorage.setItem('m_cap', currentCap);
             updateUI();
+        }
+
+        function fullReset() {
+            if(confirm("Voulez-vous vraiment supprimer tout l'historique et le capital ?")) {
+                localStorage.clear();
+                location.reload();
+            }
         }
 
         function handleImage(input) {
@@ -182,7 +184,7 @@
         }
 
         function openTrade() {
-            if(currentCap <= 0) return alert("Saisis ton capital actuel d'abord !");
+            if(currentCap <= 0) return alert("Saisis ton capital actuel !");
             active.push({ id: Date.now(), date: new Date().toISOString(), pair: document.getElementById('pair').value, score: document.getElementById('score-display').innerText, note: document.getElementById('trade-note').value, img: compressedImg });
             localStorage.setItem('m_a', JSON.stringify(active));
             document.getElementById('trade-note').value = ""; compressedImg = "";
@@ -191,17 +193,14 @@
         }
 
         function confirmClose(id) {
-            const pl = prompt("Résultat en $ ? (ex: 50 ou -30)");
+            const pl = prompt("Résultat en $ ?");
             if (pl === null) return;
             const profit = parseFloat(pl);
             const idx = active.findIndex(x => x.id === id);
             const t = active.splice(idx, 1)[0];
-            
-            // MAJ du Capital Global
             currentCap += profit;
             localStorage.setItem('m_cap', currentCap);
             document.getElementById('global-cap').value = currentCap.toFixed(2);
-
             trades.push({ ...t, pl: profit });
             localStorage.setItem('m_a', JSON.stringify(active));
             localStorage.setItem('m_h', JSON.stringify(trades));
@@ -210,26 +209,24 @@
 
         function updateUI() {
             const act = document.getElementById('activeList');
-            act.innerHTML = active.length ? '' : '<p style="color:var(--text-dim); font-size:12px;">Aucun trade en cours.</p>';
+            act.innerHTML = active.length ? '' : '<p style="color:var(--text-dim); font-size:12px;">Aucun trade actif.</p>';
             active.forEach(t => { act.innerHTML += `<div style="background:#1c2128; border:1px solid var(--accent); padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span>${t.pair}</span><button onclick="confirmClose(${t.id})" style="background:var(--red); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">ENCAISSER</button></div>`; });
 
             const jb = document.getElementById('journalBody');
             if(jb) { jb.innerHTML = ''; trades.slice().reverse().forEach(t => { 
                 const imgTag = t.img ? `<img src="${t.img}" class="journal-img" onclick="window.open(this.src)">` : '-';
-                jb.innerHTML += `<tr><td>${new Date(t.date).toLocaleDateString()}</td><td>${t.pair}</td><td>${imgTag}</td><td style="max-width:100px; overflow:hidden; text-overflow:ellipsis;">${t.note || '-'}</td><td>${t.score}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`; 
+                jb.innerHTML += `<tr><td>${new Date(t.date).toLocaleDateString()}</td><td>${t.pair}</td><td>${imgTag}</td><td>${t.note || '-'}</td><td>${t.score}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`; 
             }); }
 
             let totalPl = 0, wins = 0;
             let dPl = 0, mPl = 0, yPl = 0;
             const now = new Date();
-            let hist = [currentCap - trades.reduce((acc, curr) => acc + curr.pl, 0)]; // Point de départ
+            let startBase = currentCap - trades.reduce((acc, curr) => acc + curr.pl, 0);
+            let hist = [startBase];
+            let running = startBase;
 
-            let runningCap = hist[0];
             trades.forEach(t => {
-                const td = new Date(t.date);
-                totalPl += t.pl;
-                runningCap += t.pl;
-                hist.push(runningCap);
+                const td = new Date(t.date); totalPl += t.pl; running += t.pl; hist.push(running);
                 if(t.pl >= 0) wins++;
                 if(td.toDateString() === now.toDateString()) dPl += t.pl;
                 if(td.getMonth() === now.getMonth() && td.getFullYear() === now.getFullYear()) mPl += t.pl;
