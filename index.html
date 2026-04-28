@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALONE_TRADING_SYSTEM_V14</title>
+    <title>MALONE_TRADING_V14</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -16,20 +16,17 @@
         .page { display: none; flex: 1; padding: 20px; overflow-y: auto; }
         .page.active { display: block; }
         .layout-hub { display: grid; grid-template-columns: 1fr 450px; gap: 20px; }
-        .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        h3 { color: var(--accent); font-family: 'Orbitron'; font-size: 13px; margin: 0 0 15px 0; text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 10px; }
-        .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .check-row { display: flex; justify-content: space-between; align-items: center; background: #161b22; padding: 12px; border-radius: 6px; font-size: 13px; border-left: 3px solid #30363d; }
-        .check-row input { width: 18px; height: 18px; accent-color: var(--accent); }
-        .pts { color: var(--accent); font-weight: bold; font-size: 11px; margin-left: 10px; }
-        .score-box { text-align: center; padding: 25px; border-radius: 10px; border: 2px solid var(--border); background: rgba(0,0,0,0.4); }
-        .score-val { font-family: 'Orbitron'; font-size: 60px; display: block; }
-        .input-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
-        label { display: block; font-size: 10px; color: var(--text-dim); margin-bottom: 5px; text-transform: uppercase; }
-        input, select { width: 100%; background: #161b22; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
-        .btn-action { background: var(--green); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; margin-top: 15px; }
-        .active-trade-card { background: #1c2128; border: 1px solid var(--accent); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .btn-close { background: var(--red); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-size: 10px; }
+        .glass-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+        h3 { color: var(--accent); font-family: 'Orbitron'; font-size: 12px; margin: 0 0 15px 0; text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 10px; }
+        .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .check-row { display: flex; justify-content: space-between; align-items: center; background: #161b22; padding: 10px; border-radius: 6px; font-size: 12px; border-left: 2px solid #30363d; }
+        .score-box { text-align: center; padding: 20px; border-radius: 10px; border: 2px solid var(--border); background: rgba(0,0,0,0.3); }
+        .score-val { font-family: 'Orbitron'; font-size: 50px; display: block; }
+        .input-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        input, select { width: 100%; background: #161b22; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; font-size: 13px; outline: none; }
+        .btn-action { background: var(--green); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; margin-top: 10px; }
+        .stat-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 5px; display: block; }
+        .stat-val-small { font-size: 18px; font-family: 'Orbitron'; }
     </style>
 </head>
 <body>
@@ -41,106 +38,93 @@
     </div>
 
     <div id="dashboard" class="page active">
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom:20px;">
-            <div class="glass-card" style="text-align:center;"><span>EQUITY</span><br><b id="db-bal" style="font-size:24px; color:var(--accent);">0.00$</b></div>
-            <div class="glass-card" style="text-align:center;"><span>P/L TOTAL</span><br><b id="db-pl" style="font-size:24px;">0.00$</b></div>
-            <div class="glass-card" style="text-align:center;"><span>WIN RATE</span><br><b id="db-wr" style="font-size:24px;">0%</b></div>
-            <div class="glass-card" style="text-align:center;"><span>TRADES</span><br><b id="db-tr" style="font-size:24px;">0</b></div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px;">
+            <div class="glass-card" style="text-align:center;"><span class="stat-label">EQUITY</span><b id="db-bal" class="stat-val-small" style="color:var(--accent);">0.00$</b></div>
+            <div class="glass-card" style="text-align:center;"><span class="stat-label">P/L TOTAL</span><b id="db-pl" class="stat-val-small">0.00$</b></div>
+            <div class="glass-card" style="text-align:center;"><span class="stat-label">WIN RATE</span><b id="db-wr" class="stat-val-small">0%</b></div>
+            <div class="glass-card" style="text-align:center;"><span class="stat-label">TRADES</span><b id="db-tr" class="stat-val-small">0</b></div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom:20px;">
-            <div class="glass-card" style="text-align:center; border-bottom: 2px solid var(--accent);">
-                <span style="font-size: 10px; color: var(--text-dim);">RÉSULTAT JOUR</span><br>
-                <b id="stat-day" style="font-size:20px;">0.00$</b>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
+            <div class="glass-card" style="text-align:center; border-top: 2px solid var(--accent);">
+                <span class="stat-label">RÉSULTAT JOUR</span>
+                <b id="stat-day" class="stat-val-small">0.00$</b>
             </div>
-            <div class="glass-card" style="text-align:center; border-bottom: 2px solid var(--accent);">
-                <span style="font-size: 10px; color: var(--text-dim);">RÉSULTAT MOIS</span><br>
-                <b id="stat-month" style="font-size:20px;">0.00$</b>
+            <div class="glass-card" style="text-align:center; border-top: 2px solid var(--accent);">
+                <span class="stat-label">RÉSULTAT MOIS</span>
+                <b id="stat-month" class="stat-val-small">0.00$</b>
             </div>
-            <div class="glass-card" style="text-align:center; border-bottom: 2px solid var(--accent);">
-                <span style="font-size: 10px; color: var(--text-dim);">RÉSULTAT ANNÉE</span><br>
-                <b id="stat-year" style="font-size:20px;">0.00$</b>
+            <div class="glass-card" style="text-align:center; border-top: 2px solid var(--accent);">
+                <span class="stat-label">RÉSULTAT ANNÉE</span>
+                <b id="stat-year" class="stat-val-small">0.00$</b>
             </div>
         </div>
-        
+
         <div class="glass-card">
             <h3>⚡ POSITIONS EN COURS</h3>
-            <div id="activeList">
-                <p style="color:var(--text-dim); font-size:13px;">Aucun trade actif.</p>
-            </div>
+            <div id="activeList"><p style="color:var(--text-dim); font-size:12px;">Aucun trade actif.</p></div>
         </div>
 
         <div class="glass-card">
             <h3>📊 PERFORMANCE</h3>
-            <div style="height: 300px;"><canvas id="equityChart"></canvas></div>
+            <div style="height: 250px;"><canvas id="equityChart"></canvas></div>
         </div>
     </div>
 
     <div id="hub" class="page">
         <div class="layout-hub">
             <div class="glass-card">
-                <h3>🛡️ CHECKLIST STRATÉGIQUE</h3>
+                <h3>🛡️ CHECKLIST (80%)</h3>
                 <div class="check-grid">
-                    <div class="check-row">1. Structure Fond D1/H4/H1 <span class="pts">20%</span> <input type="checkbox" class="cb" data-p="20" onchange="calc()"></div>
-                    <div class="check-row">2. Cassure de la tendance <span class="pts">15%</span> <input type="checkbox" class="cb" data-p="15" onchange="calc()"></div>
-                    <div class="check-row">3. Zone SMMA / Supply-Demand <span class="pts">10%</span> <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">4. Timeframe 1H & 2H (Aligné) <span class="pts">10%</span> <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
-                    <div class="check-row">5. Order block (30m-W1) <span class="pts">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">6. RSI divergence (30m-4H) <span class="pts">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">7. Double Break & Confirm <span class="pts">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">8. Pullback effectué <span class="pts">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row">9. Impact psy maîtrisé <span class="pts">5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
-                    <div class="check-row" style="background:rgba(0,212,255,0.05); border-left-color:var(--accent);">
-                        10. DISCIPLINE RISQUE <span class="pts" id="risk-bonus-display">0%</span>
-                    </div>
+                    <div class="check-row">Structure D1/H4/H1 <span>20%</span> <input type="checkbox" class="cb" data-p="20" onchange="calc()"></div>
+                    <div class="check-row">Cassure Tendance <span>15%</span> <input type="checkbox" class="cb" data-p="15" onchange="calc()"></div>
+                    <div class="check-row">Zone SMMA / S&D <span>10%</span> <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">Alignement TF 1H-2H <span>10%</span> <input type="checkbox" class="cb" data-p="10" onchange="calc()"></div>
+                    <div class="check-row">Order block <span>5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">RSI Divergence <span>5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">Double Break <span>5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">Pullback <span>5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row">Psychologie <span>5%</span> <input type="checkbox" class="cb" data-p="5" onchange="calc()"></div>
+                    <div class="check-row" style="color:var(--accent);">BONUS RISQUE <span id="risk-bonus-display">0%</span></div>
                 </div>
-                <div class="score-box" id="score-box" style="margin-top: 25px;">
-                    <b class="score-val" id="score-display">0%</b>
-                </div>
+                <div class="score-box" style="margin-top:15px;"><b class="score-val" id="score-display">0%</b></div>
             </div>
-
             <div class="glass-card">
-                <h3>⚙️ EXÉCUTION & ACTIFS</h3>
+                <h3>⚙️ EXÉCUTION</h3>
                 <div class="input-group">
-                    <div><label>CAPITAL ($)</label><input type="number" id="cap" placeholder="Ex: 200" oninput="calc()"></div>
-                    <div><label>RISQUE %</label><input type="number" id="risk" placeholder="1" oninput="calc()"></div>
-                    <div><label>SL PIPS</label><input type="number" id="sl" placeholder="10" oninput="calc()"></div>
+                    <div><label>CAPITAL ($)</label><input type="number" id="cap" oninput="calc()"></div>
+                    <div><label>RISQUE %</label><input type="number" id="risk" oninput="calc()"></div>
+                    <div><label>SL PIPS</label><input type="number" id="sl" oninput="calc()"></div>
                 </div>
-                <div style="background: #000; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid var(--green); margin-bottom: 20px;">
-                    <span style="color:var(--text-dim); font-size:10px;">LOT MT5</span>
-                    <div id="lot-res" style="font-family:'Orbitron'; font-size:32px; color:var(--green);">0.00</div>
+                <div style="background:#000; padding:15px; border-radius:8px; text-align:center; border:1px solid var(--green); margin: 15px 0;">
+                    <div id="lot-res" style="font-family:'Orbitron'; font-size:28px; color:var(--green);">0.00</div>
+                    <span style="font-size:9px; color:var(--text-dim);">LOT CALCULÉ</span>
                 </div>
                 <label>ACTIF</label>
                 <select id="pair">
-                    <optgroup label="INDICES"><option>NAS100</option><option>US30</option><option>SP500</option><option>GERMANY 40</option></optgroup>
-                    <optgroup label="FOREX">
-                        <option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>AUD/USD</option>
-                        <option>USD/CHF</option><option>USD/CAD</option><option>NZD/USD</option><option>GBP/JPY</option>
-                        <option>EUR/JPY</option><option>GBP/CAD</option>
-                    </optgroup>
-                    <optgroup label="METALS & OIL"><option>XAUUSD</option><option>SILVER</option><option>OIL</option></optgroup>
+                    <option>NAS100</option><option>US30</option><option>GER40</option><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option>
                 </select>
-                <button class="btn-action" onclick="openTrade()">LANCER LA POSITION</button>
+                <button class="btn-action" onclick="openTrade()">OUVRIR POSITION</button>
             </div>
         </div>
     </div>
 
     <div id="journal" class="page">
         <div class="glass-card">
-            <h3>📜 JOURNAL DES TRADES</h3>
-            <table style="width:100%; border-collapse:collapse; font-size:14px;">
-                <thead style="text-align:left; color:var(--text-dim); border-bottom:1px solid var(--border);">
-                    <tr><th style="padding:12px;">DATE</th><th>ACTIF</th><th>SCORE</th><th>STATUT</th><th>P/L ($)</th></tr>
-                </thead>
+            <h3>📜 HISTORIQUE</h3>
+            <table style="width:100%; text-align:left; font-size:13px;">
+                <tr style="color:var(--text-dim); border-bottom:1px solid var(--border);">
+                    <th style="padding:10px;">DATE</th><th>ACTIF</th><th>SCORE</th><th>P/L</th>
+                </tr>
                 <tbody id="journalBody"></tbody>
             </table>
-            <button style="background:transparent; border:1px solid var(--red); color:var(--red); padding:10px; cursor:pointer; border-radius:5px; margin-top:20px;" onclick="resetAll()">⚠️ RÉINITIALISER TOUT</button>
+            <button onclick="resetAll()" style="color:var(--red); background:none; border:1px solid var(--red); padding:8px; cursor:pointer; margin-top:20px; border-radius:4px;">RÉINITIALISER TOUT</button>
         </div>
     </div>
 
     <script>
-        let trades = JSON.parse(localStorage.getItem('malone_hist')) || [];
-        let active = JSON.parse(localStorage.getItem('malone_active')) || [];
+        let trades = JSON.parse(localStorage.getItem('m_h')) || [];
+        let active = JSON.parse(localStorage.getItem('m_a')) || [];
 
         function openPage(e, id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -155,75 +139,71 @@
             const r = parseFloat(document.getElementById('risk').value) || 0;
             const sl = parseFloat(document.getElementById('sl').value) || 1;
             document.getElementById('lot-res').innerText = cap > 0 ? ((cap * (r/100)) / (sl * 10)).toFixed(2) : "0.00";
-            let s = 0;
-            document.querySelectorAll('.cb').forEach(c => { if(c.checked) s += parseInt(c.getAttribute('data-p')); });
-            let bonus = r <= 1 ? 20 : (r <= 2 ? 15 : (r <= 3 ? 10 : (r <= 4 ? 5 : 0)));
-            document.getElementById('risk-bonus-display').innerText = bonus + "%";
-            const total = s + bonus;
-            document.getElementById('score-display').innerText = (r > 4 ? "DANGER" : total + "%");
-            document.getElementById('score-display').style.color = r > 4 ? 'var(--red)' : (total >= 80 ? 'var(--green)' : 'var(--accent)');
+            let s = 0; document.querySelectorAll('.cb').forEach(c => { if(c.checked) s += parseInt(c.getAttribute('data-p')); });
+            let b = r <= 1 ? 20 : (r <= 2 ? 15 : (r <= 3 ? 10 : (r <= 4 ? 5 : 0)));
+            document.getElementById('risk-bonus-display').innerText = b + "%";
+            const tot = s + b;
+            document.getElementById('score-display').innerText = r > 4 ? "STOP" : tot + "%";
+            document.getElementById('score-display').style.color = r > 4 ? 'var(--red)' : (tot >= 80 ? 'var(--green)' : 'var(--accent)');
         }
 
         function openTrade() {
             const cap = parseFloat(document.getElementById('cap').value);
-            if(!cap) return alert("Saisis ton capital !");
-            active.push({ id: Date.now(), date: new Date().toISOString(), pair: document.getElementById('pair').value, score: document.getElementById('score-display').innerText, lot: document.getElementById('lot-res').innerText, cap: cap });
-            localStorage.setItem('malone_active', JSON.stringify(active));
+            if(!cap) return alert("Capital requis !");
+            active.push({ id: Date.now(), date: new Date().toISOString(), pair: document.getElementById('pair').value, score: document.getElementById('score-display').innerText, cap: cap });
+            localStorage.setItem('m_a', JSON.stringify(active));
             openPage(null, 'dashboard');
         }
 
         function confirmClose(id) {
-            const pl = prompt("P/L en $ de ce trade ?");
+            const pl = prompt("P/L ($) ?");
             if (pl === null) return;
             const idx = active.findIndex(x => x.id === id);
-            const trade = active.splice(idx, 1)[0];
-            trades.push({ ...trade, pl: parseFloat(pl), res: parseFloat(pl) >= 0 ? 'TP' : 'SL' });
-            localStorage.setItem('malone_active', JSON.stringify(active));
-            localStorage.setItem('malone_hist', JSON.stringify(trades));
+            const t = active.splice(idx, 1)[0];
+            trades.push({ ...t, pl: parseFloat(pl) });
+            localStorage.setItem('m_a', JSON.stringify(active));
+            localStorage.setItem('m_h', JSON.stringify(trades));
             updateUI();
         }
 
-        function resetAll() { if(confirm("Effacer tout ?")) { localStorage.clear(); location.reload(); } }
-
         function updateUI() {
-            const container = document.getElementById('activeList');
-            container.innerHTML = active.length ? '' : '<p style="color:var(--text-dim); font-size:13px;">Aucun trade actif.</p>';
-            active.forEach(t => { container.innerHTML += `<div class="active-trade-card"><div><b>${t.pair}</b> | Lot: ${t.lot} | Score: ${t.score}</div><button class="btn-close" onclick="confirmClose(${t.id})">CLÔTURER</button></div>`; });
+            const act = document.getElementById('activeList');
+            act.innerHTML = active.length ? '' : '<p style="color:var(--text-dim); font-size:12px;">Aucun trade actif.</p>';
+            active.forEach(t => { act.innerHTML += `<div style="background:#1c2128; border:1px solid var(--accent); padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span>${t.pair} (${t.score})</span><button onclick="confirmClose(${t.id})" style="background:var(--red); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">CLÔTURER</button></div>`; });
 
-            const body = document.getElementById('journalBody');
-            if(body) { body.innerHTML = ''; trades.slice().reverse().forEach(t => { body.innerHTML += `<tr style="border-bottom:1px solid #161b22;"><td style="padding:12px;">${new Date(t.date).toLocaleDateString()}</td><td>${t.pair}</td><td>${t.score}</td><td>${t.res}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`; }); }
+            const jb = document.getElementById('journalBody');
+            if(jb) { jb.innerHTML = ''; trades.slice().reverse().forEach(t => { jb.innerHTML += `<tr style="border-bottom:1px solid #161b22;"><td style="padding:10px;">${new Date(t.date).toLocaleDateString()}</td><td>${t.pair}</td><td>${t.score}</td><td style="color:${t.pl>=0?'var(--green)':'var(--red)'}">${t.pl}$</td></tr>`; }); }
 
-            let total = 0, wins = 0, start = trades.length ? trades[0].cap : 0;
+            let totPl = 0, wins = 0, start = trades.length ? trades[0].cap : 0;
             let dPl = 0, mPl = 0, yPl = 0;
             const now = new Date();
             let hist = [start];
 
             trades.forEach(t => {
                 const td = new Date(t.date);
-                total += t.pl;
-                if(t.res === 'TP') wins++;
-                hist.push(start + total);
-                
+                totPl += t.pl;
+                if(t.pl >= 0) wins++;
+                hist.push(start + totPl);
                 if(td.toDateString() === now.toDateString()) dPl += t.pl;
                 if(td.getMonth() === now.getMonth() && td.getFullYear() === now.getFullYear()) mPl += t.pl;
                 if(td.getFullYear() === now.getFullYear()) yPl += t.pl;
             });
 
-            document.getElementById('db-bal').innerText = (start + total).toFixed(2) + "$";
-            document.getElementById('db-pl').innerText = total.toFixed(2) + "$";
+            document.getElementById('db-bal').innerText = (start + totPl).toFixed(2) + "$";
+            document.getElementById('db-pl').innerText = totPl.toFixed(2) + "$";
             document.getElementById('db-wr').innerText = trades.length ? ((wins/trades.length)*100).toFixed(0) + "%" : "0%";
             document.getElementById('db-tr').innerText = trades.length;
             
-            // MAJ DES COMPTEURS PÉRIODIQUES
-            const setStat = (id, val) => {
+            // MAJ JOUR/MOIS/AN
+            const updateStat = (id, v) => {
                 const el = document.getElementById(id);
-                el.innerText = val.toFixed(2) + "$";
-                el.style.color = val >= 0 ? 'var(--green)' : 'var(--red)';
+                el.innerText = v.toFixed(2) + "$";
+                el.style.color = v >= 0 ? 'var(--green)' : 'var(--red)';
             };
-            setStat('stat-day', dPl);
-            setStat('stat-month', mPl);
-            setStat('stat-year', yPl);
-
+            updateStat('stat-day', dPl);
+            updateStat('stat-month', mPl);
+            updateStat('stat-year', yPl);
+            
             drawChart(hist);
         }
 
@@ -233,6 +213,7 @@
             if(chart) chart.destroy();
             chart = new Chart(ctx, { type: 'line', data: { labels: data.map(()=>''), datasets: [{ data: data, borderColor: '#00ffa3', tension: 0.2, fill: true, backgroundColor: 'rgba(0,255,163,0.05)' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
         }
+        function resetAll() { if(confirm("Tout effacer ?")) { localStorage.clear(); location.reload(); } }
         updateUI(); calc();
     </script>
 </body>
